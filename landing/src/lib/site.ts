@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Webs con IA",
-  whatsapp: "34600000000",
+  whatsapp: "34603081081",
   email: "hola@websconia.es",
 };
 
