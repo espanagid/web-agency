@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  if (!(await isAdmin())) redirect("/admin/login");
+  if (!(await isAdmin())) redirect("/admin/login"); // /admin/login vive fuera: app/(auth)/admin/login
 
   return (
     <div className="min-h-screen bg-slate-100">
