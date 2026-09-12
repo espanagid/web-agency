@@ -6,11 +6,13 @@ type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 const ENDPOINTS: Record<string, string> = {
   mistral: "https://api.mistral.ai/v1/chat/completions",
   openai: "https://api.openai.com/v1/chat/completions",
+  deepseek: "https://api.deepseek.com/v1/chat/completions", // OpenAI-compatible
 };
 
 const DEFAULT_MODELS: Record<string, string> = {
   mistral: "mistral-small-latest",
   openai: "gpt-4o-mini",
+  deepseek: "deepseek-chat",
 };
 
 export async function aiChat(system: string, messages: ChatMessage[]): Promise<string> {
