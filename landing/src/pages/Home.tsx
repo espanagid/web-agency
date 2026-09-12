@@ -10,6 +10,7 @@ import Marquee from "../sections/Marquee";
 import Pain from "../sections/Pain";
 import AiDemo from "../sections/AiDemo";
 import Process from "../sections/Process";
+import DemoOffer from "../sections/DemoOffer";
 import Pricing from "../sections/Pricing";
 import Compare from "../sections/Compare";
 import Faq from "../sections/Faq";
@@ -65,6 +66,7 @@ function Page() {
         <Pain />
         <AiDemo />
         <Process />
+        <DemoOffer />
         <Pricing />
         <Compare />
         <Faq />

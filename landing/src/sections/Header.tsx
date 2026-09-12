@@ -37,6 +37,7 @@ export default function Header() {
   const NAV = [
     { label: t.nav.ia, href: "#ia" },
     { label: t.nav.proceso, href: "#proceso" },
+    { label: t.nav.demo, href: "#demo" },
     { label: t.nav.tarifas, href: "#tarifas" },
     { label: t.nav.faq, href: "#faq" },
   ];

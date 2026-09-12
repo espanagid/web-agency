@@ -1,7 +1,7 @@
 export type Lang = "es" | "en" | "ru";
 
 export interface Dict {
-  nav: { ia: string; proceso: string; tarifas: string; faq: string; whatsapp: string; writeUs: string };
+  nav: { ia: string; proceso: string; demo: string; tarifas: string; faq: string; whatsapp: string; writeUs: string };
   hero: {
     eyebrow: string;
     titleA: string;
@@ -35,6 +35,20 @@ export interface Dict {
     leadTitle: string;
     leadBody: string;
     features: { t: string; d: string }[];
+  };
+  demoOffer: {
+    eyebrow: string;
+    titleA: string;
+    titleB: string;
+    sub: string;
+    badge: string;
+    sendTitle: string;
+    send: string[];
+    getTitle: string;
+    get: string[];
+    then: string;
+    cta: string;
+    note: string;
   };
   process: {
     eyebrow: string;
@@ -86,6 +100,7 @@ export const es: Dict = {
   nav: {
     ia: "IA 24/7",
     proceso: "Proceso",
+    demo: "Demo gratis",
     tarifas: "Tarifas",
     faq: "FAQ",
     whatsapp: "WhatsApp",
@@ -187,7 +202,37 @@ export const es: Dict = {
         t: "Te avisa por WhatsApp",
         d: "Cada lead cualificado llega a tu móvil con nombre, necesidad y cita. Tú solo cierras.",
       },
+      {
+        t: "Habla más de 50 idiomas",
+        d: "Tus clientes escriben en inglés, ruso, árabe o chino — la IA responde en su idioma al instante. Perfecto para zonas turísticas.",
+      },
     ],
+  },
+  demoOffer: {
+    eyebrow: "Empieza sin riesgo",
+    titleA: "Primero, tu demo gratis.",
+    titleB: "Decides después.",
+    sub: "Sin pagos, sin compromiso, sin letra pequeña. Nos cuentas tu negocio y en 72 horas ves tu web funcionando.",
+    badge: "100% gratis",
+    sendTitle: "Qué nos envías",
+    send: [
+      "Nombre y descripción de tu negocio",
+      "Tu logo (si no tienes, te generamos uno)",
+      "Los colores que te gustan",
+      "Datos de contacto y WhatsApp",
+      "Fotos de tu trabajo, si tienes",
+      "Cualquier info que creas útil",
+    ],
+    getTitle: "Qué recibes en 72 horas",
+    get: [
+      "Demo web funcionando con tu contenido",
+      "Diseño en tus colores, con tu logo",
+      "Recepcionista IA ya entrenada con tu negocio",
+      "Sin tarjeta, sin permanencia, sin trucos",
+    ],
+    then: "¿Te gusta? Elegimos la tarifa juntos y empezamos a traerte clientes nuevos. ¿No te convence? Te quedas con las ideas y nos damos la mano.",
+    cta: "Quiero mi demo gratis",
+    note: "Sin compromiso · Respuesta en menos de 2 horas",
   },
   process: {
     eyebrow: "Cómo funciona",
@@ -249,6 +294,7 @@ export const es: Dict = {
           "Recepcionista IA 24/7 (1.000 mensajes/mes)",
           "Base de conocimiento: hasta 30 documentos",
           "Cualificación de leads automática",
+          "La IA habla más de 50 idiomas",
           "Agenda citas en tu Google Calendar",
           "Mini-CRM con tus leads",
           "Web en 2 idiomas (ES + EN/RU)",

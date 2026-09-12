@@ -68,6 +68,8 @@ export default function AiDemo() {
         { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.6)" },
         "+=0.4"
       );
+      // подсветить все фичи, включая те, что не получили своё сообщение
+      tl.to(feats, { opacity: 1, duration: 0.4 }, "<0.3");
       tl.to({}, { duration: 0.5 }); // пауза в конце
     }, sectionRef);
     return () => ctx.revert();
