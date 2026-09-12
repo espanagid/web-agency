@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Site {
+  id        String   @id @default(cuid())
+  slug      String   @unique // -> slug.BASE_DOMAIN
+  domain    String?  @unique // dominio propio del cliente
+  name      String
+  tagline   String?
+  sector    String?
+  phone     String?
+  whatsapp  String?  // solo dígitos, ej. 34600123456
+  email     String?
+  address   String?
+  hours     String?
+  colors    Json     @default("{\"primary\":\"#0f766e\",\"accent\":\"#f59e0b\"}")
+  plan      String   @default("presencia") // presencia | recepcion | todo-incluido
+  published Boolean  @default(false)
+  aiEnabled Boolean  @default(false)
+  aiPrompt  String?
+  aiQuota   Int      @default(500) // conversaciones / mes
+  aiUsed    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sections Section[]
+  leads    Lead[]
+  chats    ChatMessage[]
+}
+
+model Section {
+  id      String @id @default(cuid())
+  siteId  String
+  site    Site   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  type    String // hero | services | testimonials | faq | contact
+  order   Int
+  content Json
+
+  @@index([siteId, order])
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String?
+  email     String?
+  message   String?
+  source    String   @default("form") // form | chat | whatsapp
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([siteId, createdAt])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  role      String // user | assistant | system
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([siteId, createdAt])
+}
