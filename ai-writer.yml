@@ -1,0 +1,76 @@
+name: AI File Writer
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  generate-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Get issue content
+        id: issue
+        run: |
+          echo "TITLE<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ github.event.issue.title }}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "BODY<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Call DeepSeek API
+        id: ai
+        run: |
+          RESPONSE=$(curl -s https://api.deepseek.com/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.DEEPSEEK_API_KEY }}" \
+            -d '{
+              "model": "deepseek-chat",
+              "messages": [
+                {"role": "system", "content": "Ты помощник по документации проекта. Отвечай только содержимым файла в формате:\n---FILE: path/to/file.md---\n[содержимое]\n---END---"},
+                {"role": "user", "content": "Задача: ${{ steps.issue.outputs.TITLE }}\n\n${{ steps.issue.outputs.BODY }}"}
+              ],
+              "temperature": 0.3
+            }')
+          echo "RAW<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESPONSE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Parse and write files
+        run: |
+          # Скрипт парсинга и создания файлов
+          # (полный скрипт ниже)
+
+      - name: Commit and push
+        run: |
+          git config user.name "ai-bot"
+          git config user.email "ai-bot@users.noreply.github.com"
+          git add .
+          git commit -m "AI: generate files for #${{ github.event.issue.number }}" || exit 0
+          git push
+
+      - name: Close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ Файлы сгенерированы и закоммичены.'
+            })
+            github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed'
+            })
