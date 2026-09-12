@@ -16,6 +16,7 @@ export function LeadForm() {
         name: fd.get("name"),
         phone: fd.get("phone"),
         message: fd.get("message"),
+        company: fd.get("company"), // honeypot: debe estar vacío
       }),
     });
     setState(res.ok ? "sent" : "error");
@@ -34,6 +35,15 @@ export function LeadForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      {/* Honeypot anti-bots: invisible para humanos */}
+      <input
+        name="company"
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] top-auto h-0 w-0 opacity-0"
+      />
       <input name="name" required placeholder="Tu nombre" className={input} />
       <input name="phone" type="tel" required placeholder="Tu teléfono" className={input} />
       <textarea

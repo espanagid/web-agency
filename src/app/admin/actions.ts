@@ -1,8 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/db";
+import { isAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+// Server actions NO heredan la auth del layout: cada action valida por sí misma.
+async function requireAdmin() {
+  if (!(await isAdmin())) throw new Error("No autorizado");
+}
 
 function defaultSections(name: string) {
   return [
@@ -31,6 +37,8 @@ function defaultSections(name: string) {
 }
 
 export async function createSite(formData: FormData) {
+  await requireAdmin();
+
   const name = String(formData.get("name") ?? "").trim();
   const slug = String(formData.get("slug") ?? "")
     .trim()
@@ -55,6 +63,8 @@ export async function createSite(formData: FormData) {
 }
 
 export async function updateSite(siteId: string, formData: FormData) {
+  await requireAdmin();
+
   const str = (k: string) => String(formData.get(k) ?? "").trim() || null;
   const bool = (k: string) => formData.get(k) === "on";
 
@@ -111,12 +121,16 @@ export async function updateSite(siteId: string, formData: FormData) {
 }
 
 export async function deleteSite(siteId: string) {
+  await requireAdmin();
+
   await prisma.site.delete({ where: { id: siteId } });
   revalidatePath("/admin");
   redirect("/admin");
 }
 
 export async function markLeadHandled(leadId: string) {
+  await requireAdmin();
+
   await prisma.lead.update({ where: { id: leadId }, data: { handled: true } });
   revalidatePath("/admin/leads");
 }

@@ -26,14 +26,14 @@ export function ChatWidget({
     const text = input.trim();
     if (!text || busy) return;
     setInput("");
-    const history = [...msgs, { role: "user" as const, content: text }];
-    setMsgs(history);
+    const prev = msgs; // la API añade `message` al final de `history`
+    setMsgs([...prev, { role: "user" as const, content: text }]);
     setBusy(true);
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: history.slice(-8) }),
+        body: JSON.stringify({ message: text, history: prev.slice(-8) }),
       });
       const data = await res.json();
       setMsgs((m) => [...m, { role: "assistant", content: data.reply ?? "Error, inténtalo de nuevo." }]);

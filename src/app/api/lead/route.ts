@@ -2,17 +2,26 @@ import { NextResponse } from "next/server";
 import { getSite } from "@/lib/tenant";
 import { prisma } from "@/lib/db";
 import { notifyTelegram } from "@/lib/notify";
+import { rateLimitOk, clientIp } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
   const site = await getSite();
   if (!site) return NextResponse.json({ error: "Sitio no encontrado" }, { status: 404 });
 
-  let body: { name?: string; phone?: string; email?: string; message?: string };
+  // Anti-spam: rate limit por IP (10 envíos / min)
+  if (!rateLimitOk(`lead:${clientIp(req)}`, 10, 60_000)) {
+    return NextResponse.json({ error: "Demasiadas solicitudes" }, { status: 429 });
+  }
+
+  let body: { name?: string; phone?: string; email?: string; message?: string; company?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
+
+  // Honeypot: los bots rellenan el campo oculto "company"
+  if (body.company) return NextResponse.json({ ok: true });
 
   const name = body.name?.trim().slice(0, 120);
   const phone = body.phone?.trim().slice(0, 30);

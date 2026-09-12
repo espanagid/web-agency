@@ -3,6 +3,7 @@ import { getSite } from "@/lib/tenant";
 import { prisma } from "@/lib/db";
 import { aiChat, buildSystemPrompt } from "@/lib/ai";
 import { notifyTelegram } from "@/lib/notify";
+import { rateLimitOk, clientIp } from "@/lib/ratelimit";
 
 // Regex teléfono ES: +34 / 0034 / 6XX / 7XX / 9XX
 const PHONE_RE = /(\+?34|0034)?[\s.-]?(\d[\s.-]?){9}/;
@@ -11,6 +12,11 @@ export async function POST(req: Request) {
   const site = await getSite();
   if (!site || !site.aiEnabled) {
     return NextResponse.json({ error: "Chat no disponible" }, { status: 404 });
+  }
+
+  // Anti-abuso: 15 mensajes / min por IP (protege la cuota de IA del cliente)
+  if (!rateLimitOk(`chat:${clientIp(req)}`, 15, 60_000)) {
+    return NextResponse.json({ error: "Demasiados mensajes, inténtalo en un minuto" }, { status: 429 });
   }
 
   let body: { message?: string; history?: { role: string; content: string }[] };
