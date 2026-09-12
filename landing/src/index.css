@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-ink text-cream font-body antialiased;
+    overscroll-behavior: none;
+  }
+
+  ::selection {
+    background: #d2ff00;
+    color: #111112;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #d2ff00;
+    outline-offset: 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111112;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3a3f2e;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b2c73a;
+  }
+}
+
+@layer components {
+  /* ---- типографика ---- */
+  .display-hero {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 560;
+    font-size: clamp(2.9rem, 8.2vw, 8.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+  .display-section {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 520;
+    font-size: clamp(2.1rem, 5.4vw, 5rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+  }
+  .display-accent {
+    font-style: italic;
+    font-weight: 480;
+    color: #d2ff00;
+  }
+  .eyebrow {
+    @apply font-body uppercase text-sage;
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    font-weight: 500;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- ссылки с анимированным подчёркиванием (inOutQuint) ---- */
+  .u-link {
+    position: relative;
+    display: inline-block;
+  }
+  .u-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1);
+  }
+  .u-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* ---- split-text: строки/символы в клип-масках ---- */
+  .st-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .st-inner {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  /* ---- зерно поверх всего ---- */
+  .noise-overlay {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 90;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 8s steps(10) infinite;
+  }
+
+  /* ---- бегущая строка ---- */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  /* ---- WhatsApp-чат ---- */
+  .bubble {
+    @apply rounded-2xl px-4 py-2.5 text-[0.85rem] leading-snug;
+    max-width: 82%;
+  }
+  .bubble-in {
+    @apply bg-[#242822] text-cream rounded-bl-md;
+  }
+  .bubble-out {
+    @apply bg-lime text-ink rounded-br-md ml-auto;
+    font-weight: 500;
+  }
+  .typing-dot {
+    @apply inline-block w-1.5 h-1.5 rounded-full bg-sage;
+    animation: typing 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  /* ---- прелоадер ---- */
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #111112;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 4vw, 4rem);
+  }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noise-overlay { animation: none; }
+}
