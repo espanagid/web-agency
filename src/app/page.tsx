@@ -1,13 +1,14 @@
 import { getSite } from "@/lib/tenant";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { ChatWidget } from "@/components/ChatWidget";
+import { AgencySite } from "@/components/AgencySite";
 
 export const dynamic = "force-dynamic"; // siempre fresh: contenido cambia por admin
 
 export default async function Home() {
   const site = await getSite();
 
-  // Dominio principal de la agencia
+  // Dominio principal sin registro "agencia" todavía
   if (!site) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
@@ -27,6 +28,16 @@ export default async function Home() {
         >
           Admin
         </a>
+      </main>
+    );
+  }
+
+  // Web de la propia agencia (multilingüe, rich UI)
+  if (site.slug === "agencia") {
+    return (
+      <main>
+        <AgencySite site={site} />
+        {site.aiEnabled && <ChatWidget siteName={site.name} whatsapp={site.whatsapp} />}
       </main>
     );
   }

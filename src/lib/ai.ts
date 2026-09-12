@@ -1,5 +1,5 @@
-// Abstracción de proveedor IA: mistral | openai (OpenAI-compatible).
-// Añadir otro proveedor = 5 líneas aquí, sin tocar el resto del código.
+// Abstracción de proveedor IA: mistral | openai | deepseek (OpenAI-compatible).
+// Añadir otro proveedor = 2 líneas aquí, sin tocar el resto del código.
 
 type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 
@@ -12,7 +12,7 @@ const ENDPOINTS: Record<string, string> = {
 const DEFAULT_MODELS: Record<string, string> = {
   mistral: "mistral-small-latest",
   openai: "gpt-4o-mini",
-  deepseek: "deepseek-flash", // modelo actual (deepseek-chat ya no existe)
+  deepseek: "deepseek-flash", // deepseek-chat fue descontinuado
 };
 
 export async function aiChat(system: string, messages: ChatMessage[]): Promise<string> {
@@ -58,17 +58,22 @@ export function buildSystemPrompt(site: {
     ? (services.content as { items?: { name: string; price?: string; desc?: string }[] }).items ?? []
     : [];
 
+  const faqSection = site.sections.find((s) => s.type === "faq");
+  const faqs = faqSection
+    ? (faqSection.content as { items?: { q: string; a: string }[] }).items ?? []
+    : [];
+
   const lines = [
     `Eres la recepcionista virtual de "${site.name}"${site.tagline ? ` (${site.tagline})` : ""}.`,
     `Sector: ${site.sector ?? "negocio local"}.`,
     "",
     "REGLAS:",
-    "- Responde SIEMPRE en español, de forma breve, cálida y profesional (máx. 3 frases por mensaje).",
-    "- Tu objetivo: ayudar al cliente a RESERVAR CITA. Pregunta servicio deseado y horario preferido.",
-    "- Cuando tengas servicio + hora + nombre, invita a confirmar por WhatsApp" + (site.whatsapp ? ` (${site.whatsapp})` : ""),
-    "  con un mensaje ya redactado para copiar y pegar.",
+    "- Responde SIEMPRE en el idioma del visitante (español, ruso o inglés), de forma breve, cálida y profesional (máx. 3 frases por mensaje).",
+    "- Tu objetivo: ayudar al cliente a RESERVAR o dejar sus datos de contacto. Pregunta servicio deseado y horario preferido.",
+    "- Cuando tengas servicio + hora + nombre, invita a confirmar por WhatsApp" + (site.whatsapp ? ` (${site.whatsapp})` : "")
+    + "  con un mensaje ya redactado para copiar y pegar.",
     "- NUNCA inventes precios ni servicios que no estén en la lista. Si no sabes algo, di que lo confirman por WhatsApp.",
-    "- Si te piden algo fuera de tu alcance (quejas, cambios de cita urgentes), pasa el contacto al negocio por WhatsApp.",
+    "- Si te piden algo fuera de tu alcance (quejas, cambios urgentes), pasa el contacto al negocio por WhatsApp.",
     "",
     "DATOS DEL NEGOCIO:",
     site.hours ? `- Horario: ${site.hours}` : "",
@@ -76,6 +81,9 @@ export function buildSystemPrompt(site: {
     items.length ? "- Servicios y precios:" : "- Pregunta por WhatsApp para precios.",
     ...items.map((i) => `  * ${i.name}${i.price ? ` — ${i.price}` : ""}${i.desc ? ` (${i.desc})` : ""}`),
     "",
+    ...(faqs.length
+      ? ["Preguntas frecuentes:", ...faqs.map((f) => `  * ${f.q} → ${f.a}`), ""]
+      : []),
     site.aiPrompt ?? "",
   ];
 
