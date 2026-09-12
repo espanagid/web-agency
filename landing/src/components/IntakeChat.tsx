@@ -65,8 +65,12 @@ function isValidContact(text: string): boolean {
   return c !== null && c.trim().length > 0;
 }
 
-/** Шаги, на которых ответ клиента — осмысленный текст (там ловим язык) */
-const DETECT_STEPS = new Set<Step>(["business", "sectorFree", "desc", "desc2", "colors", "extra"]);
+/**
+ * Шаги, на которых ловим язык ответа. Имя тоже включено: «Виталий»/«Ванг»
+ * кириллицей/иероглифами — надёжный сигнал, а латинские имена (Carlos, Anna)
+ * эвристика просто пропустит.
+ */
+const DETECT_STEPS = new Set<Step>(["name", "business", "sectorFree", "desc", "desc2", "colors", "extra"]);
 
 /**
  * Эвристика языка по тексту:
@@ -285,8 +289,11 @@ export default function IntakeChat() {
     switch (step) {
       case "name": {
         v.name = text;
-        pushAi(d.askBusiness.replace("{name}", text));
-        setStep("business");
+        const next = () => {
+          pushAi(live.current.d.askBusiness.replace("{name}", text));
+          setStep("business");
+        };
+        wantDetect ? maybeOfferLang(text, next) : next();
         break;
       }
       case "business": {
