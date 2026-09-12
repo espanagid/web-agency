@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang, type Lang } from "../i18n";
+import { es } from "../i18n/es";
+import { en } from "../i18n/en";
+import { ru } from "../i18n/ru";
 import { trpc } from "@/providers/trpc";
 import { SITE } from "../lib/site";
 
@@ -9,7 +12,12 @@ import { SITE } from "../lib/site";
  * имя → бизнес → ниша → описание (с дожимом, если мало) → цвета → лого →
  * файлы любого формата → контакт (авто-извлечение из текста) → доп. инфо →
  * сводка → отправка в CRM + кнопка дублирования в WhatsApp владельцу.
+ *
+ * Агент распознаёт язык сообщений клиента (ru/en/es) и предлагает
+ * продолжить на нём — без потери прогресса диалога.
  */
+
+const DICTS = { es, en, ru };
 
 type Step =
   | "name"
@@ -25,6 +33,7 @@ type Step =
   | "contact"
   | "extra"
   | "summary"
+  | "langOffer"
   | "done";
 
 interface Msg {
@@ -54,6 +63,26 @@ function extractContact(text: string): string | null {
 function isValidContact(text: string): boolean {
   const c = extractContact(text);
   return c !== null && c.trim().length > 0;
+}
+
+/** Шаги, на которых ответ клиента — осмысленный текст (там ловим язык) */
+const DETECT_STEPS = new Set<Step>(["business", "sectorFree", "desc", "desc2", "colors", "extra"]);
+
+/**
+ * Эвристика языка по тексту:
+ * кириллица → ru; ¿ ¡ ñ á é í ó ú ü → es; ASCII + английские стоп-слова → en.
+ * Консервативно: если не уверены — null (не мешаем диалогу).
+ */
+function detectLang(text: string): Lang | null {
+  if (/[а-яё]/i.test(text)) return "ru";
+  if (/[¿¡ñáéíóúü]/i.test(text)) return "es";
+  const letters = text.replace(/[^a-zA-Z]/g, "");
+  if (letters.length < 4) return null;
+  if (/[^\x00-\x7F]/.test(text)) return null;
+  const low = ` ${text.toLowerCase()} `;
+  const enStop = [" the ", " my ", " and ", " is ", " we ", " i ", " for ", " with ", " hello", " hi ", " yes"];
+  const hits = enStop.filter((w) => low.includes(w)).length;
+  return hits >= 1 ? "en" : null;
 }
 
 const SUMMARY_LABELS: Record<Lang, Record<string, string>> = {
@@ -102,15 +131,18 @@ let mid = 0;
 const nextId = () => ++mid;
 
 export default function IntakeChat() {
-  const { t, lang } = useLang();
-  const d = t.intake;
-  const L = SUMMARY_LABELS[lang];
+  const { lang } = useLang();
+  // язык диалога живёт отдельно от языка сайта: переключение не сбрасывает чат
+  const [chatLang, setChatLang] = useState<Lang>(lang);
+  const d = DICTS[chatLang].intake;
+  const L = SUMMARY_LABELS[chatLang];
 
   const [messages, setMessages] = useState<Msg[]>([]);
   const [typing, setTyping] = useState(false);
   const [step, setStep] = useState<Step>("name");
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [detectedLang, setDetectedLang] = useState<Lang>("es");
 
   // собранные данные
   const data = useRef({
@@ -129,29 +161,44 @@ export default function IntakeChat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const startedRef = useRef(false);
+  const offeredRef = useRef(false);
+  /** отложенный следующий вопрос — пока клиент выбирает язык */
+  const pendingRef = useRef<null | (() => void)>(null);
+  /** next-вопрос, который надо задать уже ПОСЛЕ переключения языка */
+  const pendingAfterSwitchRef = useRef<null | (() => void)>(null);
 
   const submitMutation = trpc.leads.submit.useMutation();
 
-  const pushAi = useCallback((text: string, kind: Msg["kind"] = "text") => {
+  function pushAi(text: string, kind: Msg["kind"] = "text") {
     setTyping(true);
     const wait = Math.min(500 + text.length * 12, 1400);
     window.setTimeout(() => {
       setTyping(false);
       setMessages((m) => [...m, { id: nextId(), from: "ai", text, kind }]);
     }, wait);
-  }, []);
+  }
 
-  const pushUser = useCallback((text: string) => {
+  function pushUser(text: string) {
     setMessages((m) => [...m, { id: nextId(), from: "user", text }]);
-  }, []);
+  }
 
   // старт диалога
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    pushAi(d.greeting);
+    pushAi(DICTS[lang].intake.greeting);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // после фактического переключения языка — задаём отложенный вопрос уже на нём
+  useEffect(() => {
+    const p = pendingAfterSwitchRef.current;
+    if (p) {
+      pendingAfterSwitchRef.current = null;
+      p();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatLang]);
 
   // автопрокрутка вниз
   useEffect(() => {
@@ -159,7 +206,7 @@ export default function IntakeChat() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, typing]);
 
-  const buildSummary = useCallback((): string => {
+  function buildSummary(): string {
     const v = data.current;
     const lines = [
       L.title,
@@ -174,19 +221,14 @@ export default function IntakeChat() {
     if (notes.length) lines.push(`${L.info}: ${notes.join(" | ")}`);
     if (files.length) lines.push(`${L.files}: ${files.length}`);
     return lines.join("\n");
-  }, [L, files]);
+  }
 
-  const summary = useMemo(
-    () => (step === "summary" || step === "done" ? buildSummary() : ""),
-    [step, buildSummary]
-  );
-
-  const goFiles = useCallback(() => {
+  function goFiles() {
     pushAi(d.askFiles);
     setStep("files");
-  }, [d.askFiles, pushAi]);
+  }
 
-  const goContact = useCallback(() => {
+  function goContact() {
     if (data.current.extracted) {
       pushAi(d.contactAuto.replace("{c}", data.current.extracted));
       setStep("contactAuto");
@@ -194,211 +236,259 @@ export default function IntakeChat() {
       pushAi(d.askContact);
       setStep("contact");
     }
-  }, [d.askContact, d.contactAuto, pushAi]);
+  }
 
-  const goExtra = useCallback(() => {
+  function goExtra() {
     pushAi(d.askExtra);
     setStep("extra");
-  }, [d.askExtra, pushAi]);
+  }
 
-  const goSummary = useCallback(() => {
+  function goSummary() {
     pushAi(d.summaryTitle, "summary");
     setStep("summary");
-  }, [d.summaryTitle, pushAi]);
+  }
+
+  /**
+   * Live-ссылка на актуальный словарь и переходы: отложенные вопросы
+   * (после выбора языка) должны читать словарь ПОСЛЕ переключения,
+   * а не замыкание старого рендера.
+   */
+  const live = useRef({ d, goFiles, goContact, goExtra, goSummary });
+  live.current = { d, goFiles, goContact, goExtra, goSummary };
+
+  /**
+   * Если язык ответа отличается от языка диалога — один раз предлагаем
+   * переключиться; следующий вопрос (next) задаётся после выбора.
+   */
+  function maybeOfferLang(text: string, next: () => void) {
+    const detected = detectLang(text);
+    if (!offeredRef.current && detected && detected !== chatLang) {
+      offeredRef.current = true;
+      pendingRef.current = next;
+      setDetectedLang(detected);
+      pushAi(DICTS[detected].intake.langOffer);
+      setStep("langOffer");
+      return;
+    }
+    next();
+  }
 
   /** Обработка текстового ответа пользователя по текущему шагу */
-  const handleText = useCallback(
-    (raw: string) => {
-      const text = raw.trim();
-      if (!text) return;
-      pushUser(text);
-      setInput("");
-      const v = data.current;
+  function handleText(raw: string) {
+    const text = raw.trim();
+    if (!text) return;
+    pushUser(text);
+    setInput("");
+    const v = data.current;
+    const wantDetect = DETECT_STEPS.has(step);
 
-      switch (step) {
-        case "name": {
-          v.name = text;
-          pushAi(d.askBusiness.replace("{name}", text));
-          setStep("business");
-          break;
-        }
-        case "business": {
-          v.businessName = text;
-          pushAi(d.askSector);
+    switch (step) {
+      case "name": {
+        v.name = text;
+        pushAi(d.askBusiness.replace("{name}", text));
+        setStep("business");
+        break;
+      }
+      case "business": {
+        v.businessName = text;
+        const next = () => {
+          pushAi(live.current.d.askSector);
           setStep("sector");
-          break;
-        }
-        case "sector": {
-          v.sector = text;
-          pushAi(d.askDesc);
+        };
+        wantDetect ? maybeOfferLang(text, next) : next();
+        break;
+      }
+      case "sector": {
+        v.sector = text;
+        pushAi(d.askDesc);
+        setStep("desc");
+        break;
+      }
+      case "sectorFree": {
+        v.sector = text;
+        const next = () => {
+          pushAi(live.current.d.askDesc);
           setStep("desc");
-          break;
-        }
-        case "sectorFree": {
-          v.sector = text;
-          pushAi(d.askDesc);
-          setStep("desc");
-          break;
-        }
-        case "desc": {
-          v.notes.push(text);
-          const found = extractContact(text);
-          if (found) v.extracted = found;
-          if (text.length < 80) {
-            pushAi(d.descFollowUp);
+        };
+        wantDetect ? maybeOfferLang(text, next) : next();
+        break;
+      }
+      case "desc": {
+        v.notes.push(text);
+        const found = extractContact(text);
+        if (found) v.extracted = found;
+        const short = text.length < 80;
+        const next = () => {
+          if (short) {
+            pushAi(live.current.d.descFollowUp);
             setStep("desc2");
           } else {
-            pushAi(d.descThanks);
+            pushAi(live.current.d.descThanks);
             window.setTimeout(() => {
-              pushAi(d.askColors);
+              pushAi(live.current.d.askColors);
               setStep("colors");
             }, 900);
           }
-          break;
-        }
-        case "desc2": {
-          v.notes.push(text);
-          const found = extractContact(text);
-          if (found) v.extracted = found;
-          pushAi(d.descThanks);
+        };
+        wantDetect ? maybeOfferLang(text, next) : next();
+        break;
+      }
+      case "desc2": {
+        v.notes.push(text);
+        const found = extractContact(text);
+        if (found) v.extracted = found;
+        const next = () => {
+          pushAi(live.current.d.descThanks);
           window.setTimeout(() => {
-            pushAi(d.askColors);
+            pushAi(live.current.d.askColors);
             setStep("colors");
           }, 900);
-          break;
-        }
-        case "colors": {
-          v.colors = text;
-          pushAi(d.askLogo);
-          setStep("logo");
-          break;
-        }
-        case "logo": {
-          v.hasLogo = "yes";
-          pushAi(d.askFiles);
-          setStep("files");
-          break;
-        }
-        case "contact": {
-          if (!isValidContact(text)) {
-            pushAi(d.contactInvalid);
-            break;
-          }
-          v.contact = extractContact(text) ?? text;
-          goExtra();
-          break;
-        }
-        case "extra": {
-          v.notes.push(text);
-          goSummary();
-          break;
-        }
-        default:
-          break;
+        };
+        wantDetect ? maybeOfferLang(text, next) : next();
+        break;
       }
-    },
-    [d, goExtra, goSummary, pushAi, pushUser, step]
-  );
+      case "colors": {
+        v.colors = text;
+        const next = () => {
+          pushAi(live.current.d.askLogo);
+          setStep("logo");
+        };
+        wantDetect ? maybeOfferLang(text, next) : next();
+        break;
+      }
+      case "logo": {
+        v.hasLogo = "yes";
+        pushAi(d.askFiles);
+        setStep("files");
+        break;
+      }
+      case "contact": {
+        if (!isValidContact(text)) {
+          pushAi(d.contactInvalid);
+          break;
+        }
+        v.contact = extractContact(text) ?? text;
+        goExtra();
+        break;
+      }
+      case "extra": {
+        v.notes.push(text);
+        const next = () => live.current.goSummary();
+        wantDetect ? maybeOfferLang(text, next) : next();
+        break;
+      }
+      default:
+        break;
+    }
+  }
 
   /** Клик по чипу */
-  const handleChip = useCallback(
-    (chip: string) => {
-      const v = data.current;
-      pushUser(chip);
+  function handleChip(chip: string) {
+    const v = data.current;
+    pushUser(chip);
 
-      if (step === "sector") {
-        if (chip === d.sectorOther) {
-          pushAi(d.askSectorFree);
-          setStep("sectorFree");
-        } else {
-          v.sector = chip;
-          pushAi(d.askDesc);
-          setStep("desc");
-        }
-        return;
+    if (step === "langOffer") {
+      const dl = DICTS[detectedLang].intake;
+      const pending = pendingRef.current;
+      pendingRef.current = null;
+      if (chip === dl.langSwitch) {
+        // переключаем язык диалога; вопрос задаст эффект после смены chatLang
+        pendingAfterSwitchRef.current = pending;
+        setChatLang(detectedLang);
+      } else {
+        pending?.();
       }
-      if (step === "colors") {
-        v.colors = chip;
-        pushAi(d.askLogo);
-        setStep("logo");
-        return;
+      return;
+    }
+    if (step === "sector") {
+      if (chip === d.sectorOther) {
+        pushAi(d.askSectorFree);
+        setStep("sectorFree");
+      } else {
+        v.sector = chip;
+        pushAi(d.askDesc);
+        setStep("desc");
       }
-      if (step === "logo") {
-        v.hasLogo = chip === d.logoHave ? "yes" : "generate";
-        goFiles();
-        return;
+      return;
+    }
+    if (step === "colors") {
+      v.colors = chip;
+      pushAi(d.askLogo);
+      setStep("logo");
+      return;
+    }
+    if (step === "logo") {
+      v.hasLogo = chip === d.logoHave ? "yes" : "generate";
+      goFiles();
+      return;
+    }
+    if (step === "files") {
+      if (chip === d.ready || chip === d.skip) goContact();
+      return;
+    }
+    if (step === "contactAuto") {
+      if (chip === d.contactUseIt) {
+        v.contact = v.extracted ?? "";
+        goExtra();
+      } else {
+        pushAi(d.askContact);
+        setStep("contact");
       }
-      if (step === "files") {
-        if (chip === d.ready || chip === d.skip) goContact();
-        return;
-      }
-      if (step === "contactAuto") {
-        if (chip === d.contactUseIt) {
-          v.contact = v.extracted ?? "";
-          goExtra();
-        } else {
-          pushAi(d.askContact);
-          setStep("contact");
-        }
-        return;
-      }
-      if (step === "extra") {
-        goSummary();
-        return;
-      }
-    },
-    [d, goContact, goExtra, goFiles, goSummary, pushAi, pushUser, step]
-  );
+      return;
+    }
+    if (step === "extra") {
+      goSummary();
+      return;
+    }
+  }
 
   /** Прикрепление файлов — любой формат, до 6 шт */
-  const handleFiles = useCallback(
-    (list: FileList | null) => {
-      if (!list) return;
-      setFileError(null);
-      const arr = Array.from(list);
-      const room = 6 - files.length;
-      if (room <= 0) {
+  function handleFiles(list: FileList | null) {
+    if (!list) return;
+    setFileError(null);
+    const arr = Array.from(list);
+    const room = 6 - files.length;
+    if (room <= 0) {
+      setFileError(d.filesMax);
+      return;
+    }
+    arr.slice(0, room).forEach((f) => {
+      if (f.size > 9 * 1024 * 1024) {
         setFileError(d.filesMax);
         return;
       }
-      arr.slice(0, room).forEach((f) => {
-        if (f.size > 9 * 1024 * 1024) {
-          setFileError(d.filesMax);
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-          const url = String(reader.result ?? "");
-          const base64 = url.includes(",") ? url.split(",")[1] : url;
-          setFiles((prev) => {
-            if (prev.length >= 6) return prev;
-            return [
-              ...prev,
-              { filename: f.name, mime: f.type || "application/octet-stream", dataBase64: base64 },
-            ];
-          });
-          pushAi(d.fileAdded.replace("{name}", f.name));
-        };
-        reader.readAsDataURL(f);
-      });
-      if (arr.length > room) setFileError(d.filesMax);
-      if (fileRef.current) fileRef.current.value = "";
-    },
-    [d.fileAdded, d.filesMax, files.length, pushAi]
-  );
+      const reader = new FileReader();
+      reader.onload = () => {
+        const url = String(reader.result ?? "");
+        const base64 = url.includes(",") ? url.split(",")[1] : url;
+        setFiles((prev) => {
+          if (prev.length >= 6) return prev;
+          return [
+            ...prev,
+            { filename: f.name, mime: f.type || "application/octet-stream", dataBase64: base64 },
+          ];
+        });
+        pushAi(d.fileAdded.replace("{name}", f.name));
+      };
+      reader.readAsDataURL(f);
+    });
+    if (arr.length > room) setFileError(d.filesMax);
+    if (fileRef.current) fileRef.current.value = "";
+  }
 
   /** Отправка брифа */
-  const handleSubmit = useCallback(async () => {
+  async function handleSubmit() {
     if (sending) return;
     setSending(true);
     const v = data.current;
+    const summary = buildSummary();
     const transcript = messages
       .filter((m) => m.kind === "text" || !m.kind)
       .map((m) => `${m.from === "ai" ? "AI" : "USER"}: ${m.text}`)
       .join("\n");
     try {
       await submitMutation.mutateAsync({
-        lang,
+        lang: chatLang,
         name: v.name || undefined,
         contact: v.contact || undefined,
         businessName: v.businessName || undefined,
@@ -413,29 +503,32 @@ export default function IntakeChat() {
       pushAi(`${d.successTitle}\n${d.successText}`, "success");
       setStep("done");
     } catch {
-      pushAi("⚠️ Error — inténtalo de nuevo / try again.");
+      pushAi("⚠️ Error — inténtalo de nuevo / try again / попробуйте ещё раз.");
     } finally {
       setSending(false);
     }
-  }, [d, files, lang, messages, pushAi, sending, submitMutation, summary]);
+  }
 
   // какие чипы показывать
   const chips: string[] =
-    step === "sector"
-      ? d.sectors
-      : step === "colors"
-        ? d.colorChips
-        : step === "logo"
-          ? [d.logoHave, d.logoGenerate]
-          : step === "files"
-            ? [d.ready, d.skip]
-            : step === "contactAuto"
-              ? [d.contactUseIt, d.contactOther]
-              : step === "extra"
-                ? [d.extraDone]
-                : [];
+    step === "langOffer"
+      ? [DICTS[detectedLang].intake.langSwitch, d.langStay]
+      : step === "sector"
+        ? d.sectors
+        : step === "colors"
+          ? d.colorChips
+          : step === "logo"
+            ? [d.logoHave, d.logoGenerate]
+            : step === "files"
+              ? [d.ready, d.skip]
+              : step === "contactAuto"
+                ? [d.contactUseIt, d.contactOther]
+                : step === "extra"
+                  ? [d.extraDone]
+                  : [];
 
   const inputEnabled = ["name", "business", "sector", "sectorFree", "desc", "desc2", "colors", "contact"].includes(step);
+  const summary = step === "summary" || step === "done" ? buildSummary() : "";
 
   return (
     <div className="overflow-hidden rounded-[2rem] border border-lime/25 bg-ink/80 shadow-glow-lime backdrop-blur-sm">
@@ -447,7 +540,9 @@ export default function IntakeChat() {
         </span>
         <div>
           <div className="text-sm font-semibold text-cream">{d.aiName}</div>
-          <div className="text-[0.65rem] uppercase tracking-[0.22em] text-sage">{t.hero.online}</div>
+          <div className="text-[0.65rem] uppercase tracking-[0.22em] text-sage">
+            {DICTS[chatLang].hero.online}
+          </div>
         </div>
       </div>
 

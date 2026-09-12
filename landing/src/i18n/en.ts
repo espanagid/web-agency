@@ -358,5 +358,8 @@ export const en: Dict = {
       "Your demo will be ready in 72 hours. To speed things up, send us the brief on WhatsApp with one tap:",
     waButton: "Send brief via WhatsApp",
     inputPlaceholder: "Type here...",
+    langOffer: "Looks like English is easier for you 😊 Shall we continue in English?",
+    langSwitch: "Yes, in English",
+    langStay: "No, keep this language",
   },
 };

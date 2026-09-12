@@ -132,6 +132,9 @@ export interface Dict {
     successText: string;
     waButton: string;
     inputPlaceholder: string;
+    langOffer: string;
+    langSwitch: string;
+    langStay: string;
   };
   footer: {
     eyebrow: string;
@@ -503,5 +506,8 @@ export const es: Dict = {
       "Tu demo estará lista en 72 horas. Para acelerar, mándanos el brief también por WhatsApp con un toque:",
     waButton: "Enviar brief por WhatsApp",
     inputPlaceholder: "Escribe aquí...",
+    langOffer: "¡Perfecto, puedo hablar en español! 😊 ¿Seguimos en español?",
+    langSwitch: "Sí, en español",
+    langStay: "No, sigo en este idioma",
   },
 };
