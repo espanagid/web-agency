@@ -1,11 +1,13 @@
 import SplitText, { FadeIn } from "../components/SplitText";
-import MagneticButton from "../components/MagneticButton";
+import IntakeChat from "../components/IntakeChat";
 import { WA_LINK_DEMO } from "../lib/site";
 import { useLang } from "../i18n";
 
 /**
- * Лид-магнит: бесплатное демо-сайт за 72 часа без обязательств.
- * Визуально — большая панель с лаймовой рамкой, две колонки «отправляешь / получаешь».
+ * Лид-магнит: бесплатное демо за 72 часа.
+ * Центр секции — ИИ-чат, который сам собирает бриф (текст + файлы любого
+ * формата) и передаёт заявку владельцу. Ниже — детали «что присылаете /
+ * что получаете» и альтернатива через WhatsApp.
  */
 export default function DemoOffer() {
   const { t } = useLang();
@@ -20,7 +22,7 @@ export default function DemoOffer() {
       />
 
       <div className="relative mx-auto max-w-[1200px]">
-        <div className="rounded-[2.5rem] border border-lime/35 bg-olive-deep/60 p-8 backdrop-blur-sm sm:p-14">
+        <div className="rounded-[2.5rem] border border-lime/35 bg-olive-deep/60 p-6 backdrop-blur-sm sm:p-14">
           <div className="flex flex-wrap items-center gap-4">
             <SplitText as="p" className="eyebrow">
               {d.eyebrow}
@@ -38,6 +40,16 @@ export default function DemoOffer() {
           <SplitText as="p" className="mt-6 max-w-2xl text-base leading-relaxed text-sage sm:text-lg">
             {d.sub}
           </SplitText>
+
+          {/* ИИ-интейк: главный элемент секции */}
+          <FadeIn delay={0.15} className="mt-12">
+            <div className="mx-auto max-w-3xl">
+              <IntakeChat />
+              <p className="mt-5 text-center text-xs uppercase tracking-[0.22em] text-sage">
+                {d.note}
+              </p>
+            </div>
+          </FadeIn>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2">
             {/* что присылает клиент */}
@@ -88,11 +100,16 @@ export default function DemoOffer() {
             </FadeIn>
           </div>
 
-          <FadeIn delay={0.25} className="mt-12 flex flex-col items-center gap-4">
-            <MagneticButton href={WA_LINK_DEMO} className="!px-10 !py-5 !text-base">
-              {d.cta}
-            </MagneticButton>
-            <p className="text-xs uppercase tracking-[0.22em] text-sage">{d.note}</p>
+          {/* альтернатива: напрямую в WhatsApp */}
+          <FadeIn delay={0.25} className="mt-10 text-center">
+            <a
+              href={WA_LINK_DEMO}
+              target="_blank"
+              rel="noreferrer"
+              className="u-link text-sm font-medium text-cream/80"
+            >
+              {d.cta} → WhatsApp
+            </a>
           </FadeIn>
         </div>
       </div>

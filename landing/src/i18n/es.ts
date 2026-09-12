@@ -84,6 +84,55 @@ export interface Dict {
     rows: [string, string][];
   };
   faq: { eyebrow: string; title: string; items: { q: string; a: string }[] };
+  cases: {
+    eyebrow: string;
+    titleA: string;
+    titleB: string;
+    note: string;
+    before: string;
+    after: string;
+    items: {
+      niche: string;
+      metrics: { label: string; before: string; after: string }[];
+    }[];
+  };
+  intake: {
+    aiName: string;
+    greeting: string;
+    askBusiness: string;
+    askSector: string;
+    sectors: string[];
+    sectorOther: string;
+    askSectorFree: string;
+    askDesc: string;
+    descFollowUp: string;
+    descThanks: string;
+    askColors: string;
+    colorChips: string[];
+    askLogo: string;
+    logoHave: string;
+    logoGenerate: string;
+    askFiles: string;
+    ready: string;
+    skip: string;
+    attach: string;
+    fileAdded: string;
+    filesMax: string;
+    askContact: string;
+    contactInvalid: string;
+    contactAuto: string;
+    contactUseIt: string;
+    contactOther: string;
+    askExtra: string;
+    extraDone: string;
+    summaryTitle: string;
+    submit: string;
+    sending: string;
+    successTitle: string;
+    successText: string;
+    waButton: string;
+    inputPlaceholder: string;
+  };
   footer: {
     eyebrow: string;
     titleA: string;
@@ -111,7 +160,7 @@ export const es: Dict = {
     titleA: "Webs que venden",
     titleB: "mientras duermes.",
     sub: "Creamos landing pages con un recepcionista de IA que responde al instante, cualifica clientes y agenda citas por WhatsApp — también a las 3 de la madrugada.",
-    cta1: "Quiero mi web",
+    cta1: "Quiero mi demo gratis",
     cta2: "Ver tarifas",
     stats: [
       { v: "72", u: "h", l: "de cero a online" },
@@ -241,21 +290,21 @@ export const es: Dict = {
     steps: [
       {
         n: "01",
-        time: "Hoy · 15 min",
-        t: "Hablamos por WhatsApp",
-        d: "Me cuentas tu negocio: servicios, precios, horarios, preguntas frecuentes. Sin reuniones eternas ni briefings de 40 páginas.",
+        time: "2 minutos",
+        t: "Mándanoslo todo, tal cual",
+        d: "Fotos, PDFs, textos pegados de WhatsApp, tu Instagram, notas sueltas — cualquier formato vale. Habla con nuestra IA aquí abajo y adjunta lo que tengas.",
       },
       {
         n: "02",
-        time: "72 horas",
-        t: "Diseño y entreno tu web",
-        d: "Copy en español que vende, diseño a medida, dominio, hosting, SSL y RGPD. La IA aprende de tu negocio: hasta 30 documentos en su base de conocimiento.",
+        time: "La IA te entrevista",
+        t: "Nuestra IA hace las preguntas justas",
+        d: "Pregunta lo que le falta (servicios, precios, colores, logo), ordena el brief y me llega al instante a mi WhatsApp. Sin formularios eternos.",
       },
       {
         n: "03",
-        time: "Desde el día 3",
-        t: "Recibes leads cualificados",
-        d: "Tu web responde, cualifica y agenda 24/7. Cada lead llega a tu WhatsApp. Tú solo haces tu trabajo: atender y cobrar.",
+        time: "72 horas",
+        t: "Ves tu demo funcionando",
+        d: "Recibes tu web demo con tu contenido y tus colores. Si te enamora, elegimos tarifa juntos. Si no, te quedas las ideas — gratis.",
       },
     ],
   },
@@ -379,5 +428,80 @@ export const es: Dict = {
     marquee: "¿Hablamos",
     marqueeQ: "?",
     rights: "© 2026 Webs con IA · Hecho en España",
+  },
+  cases: {
+    eyebrow: "Casos piloto",
+    titleA: "Antes y después:",
+    titleB: "los números hablan.",
+    note: "Datos de proyectos piloto con nuestros primeros clientes de cada nicho.",
+    before: "Antes",
+    after: "Después · 1 mes con la demo",
+    items: [
+      {
+        niche: "Clínica dental",
+        metrics: [
+          { label: "Consultas por semana", before: "2", after: "17" },
+          { label: "Tiempo de respuesta", before: "6 h", after: "8 s" },
+          { label: "Reservas online", before: "0", after: "12/sem" },
+        ],
+      },
+      {
+        niche: "Despacho de abogados",
+        metrics: [
+          { label: "Leads cualificados/mes", before: "3", after: "21" },
+          { label: "Tiempo de respuesta", before: "1 día", after: "10 s" },
+          { label: "Consultas agendadas", before: "2/mes", after: "15/mes" },
+        ],
+      },
+      {
+        niche: "Empresa de reformas",
+        metrics: [
+          { label: "Solicitudes de presupuesto", before: "4/mes", after: "26/mes" },
+          { label: "Mensajes perdidos fuera de horario", before: "60%", after: "0%" },
+          { label: "Visitas a obra cerradas", before: "1/mes", after: "8/mes" },
+        ],
+      },
+    ],
+  },
+  intake: {
+    aiName: "Asistente IA · Webs con IA",
+    greeting:
+      "¡Hola! Soy la IA de Webs con IA. Voy a preparar el brief para tu demo gratuita — tardamos 2 minutos. ¿Cómo te llamas?",
+    askBusiness: "Encantado, {name} 👋 ¿Cómo se llama tu negocio?",
+    askSector: "¿A qué se dedica?",
+    sectors: ["Clínica dental", "Abogados", "Reformas", "Psicología", "Restaurante / bar", "Otro"],
+    sectorOther: "Otro",
+    askSectorFree: "¿Cuál es tu sector?",
+    askDesc:
+      "Cuéntame en texto libre qué hacéis: servicios, precios, horarios, dirección... Puedes pegar texto de tu web vieja, Instagram o notas — entiendo cualquier formato.",
+    descFollowUp: "Perfecto. ¿Y cuáles son vuestros 2–3 servicios principales? Así la demo enseña lo correcto.",
+    descThanks: "Anotado 📝 Cuanta más información, mejor sale la demo.",
+    askColors: "¿Qué colores te representan? (o escribe los tuyos)",
+    colorChips: ["Elegante / oscuro", "Claro y limpio", "Vivos / atrevidos", "Que decidáis vosotros"],
+    askLogo: "¿Tienes logotipo?",
+    logoHave: "Sí, lo adjunto",
+    logoGenerate: "No — generadme uno",
+    askFiles:
+      "Adjunta lo que tengas: logo, fotos de tu trabajo, PDFs, cartas, textos — cualquier formato. Cuando termines, pulsa «Listo».",
+    ready: "Listo",
+    skip: "Saltar",
+    attach: "Adjuntar archivos",
+    fileAdded: "Recibido: {name} ✅",
+    filesMax: "Máximo 6 archivos — si tienes más, mándalos luego por WhatsApp.",
+    askContact: "Último paso: ¿a qué WhatsApp o email te envío la demo?",
+    contactInvalid: "No lo reconozco 🤔 Escríbeme un WhatsApp (+34 600 000 000) o un email.",
+    contactAuto: "He visto este contacto en tu texto: {c}. ¿Lo uso?",
+    contactUseIt: "Sí, ese",
+    contactOther: "No, otro",
+    askExtra: "¿Algo más que debamos saber? (promos, tono de la marca, referencias...)",
+    extraDone: "No, eso es todo",
+    summaryTitle: "Brief listo — revísalo:",
+    submit: "Enviar mi brief",
+    sending: "Enviando...",
+    successTitle: "¡Recibido! 🎉",
+    successText:
+      "Tu demo estará lista en 72 horas. Para acelerar, mándanos el brief también por WhatsApp con un toque:",
+    waButton: "Enviar brief por WhatsApp",
+    inputPlaceholder: "Escribe aquí...",
   },
 };

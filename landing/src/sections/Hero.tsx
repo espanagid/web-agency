@@ -3,7 +3,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitText from "../components/SplitText";
 import MagneticButton from "../components/MagneticButton";
-import { WA_LINK } from "../lib/site";
 import { scrollToId } from "../lib/scroll";
 import { useLang } from "../i18n";
 
@@ -179,7 +178,13 @@ export default function Hero({ instant = false }: { instant?: boolean }) {
           </SplitText>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <MagneticButton href={WA_LINK}>{t.hero.cta1}</MagneticButton>
+            <MagneticButton
+              onClick={() => scrollToId("#demo")}
+              href="#demo"
+              external={false}
+            >
+              {t.hero.cta1}
+            </MagneticButton>
             <MagneticButton
               variant="ghost"
               onClick={() => scrollToId("#tarifas")}
