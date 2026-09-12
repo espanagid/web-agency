@@ -3,8 +3,8 @@ export const dict = {
     nav: { plans: "Planes", process: "Cómo funciona", faq: "Preguntas", contact: "Contacto" },
     hero: {
       badge: "Agencia de webs con IA · España",
-      title: "Tu web con recepcionista de IA, lista en 72 horas",
-      sub: "Landing pages y webs para negocios locales que responden, informan y agendan citas por WhatsApp las 24 horas — incluso mientras duermes.",
+      title: "Tu web con recepcionista de IA, online en 3–7 días",
+      sub: "Landing pages para negocios locales que responden, informan y agendan citas por WhatsApp las 24 horas. Pagas después de ver el demo.",
       cta1: "Ver planes",
       cta2: "Probar la IA ahora",
     },
@@ -20,9 +20,9 @@ export const dict = {
     services: {
       title: "Qué hacemos",
       items: [
-        { name: "Web que vende", desc: "Diseño moderno, móvil-first, optimizada para Google y velocidad. Lista para captar clientes desde el primer día." },
-        { name: "Recepcionista de IA", desc: "Chat entrenado con tus servicios y precios. Responde 24/7, cualifica al cliente y le entrega el mensaje de reserva por WhatsApp." },
-        { name: "Todo incluido", desc: "Hosting, dominio, cambios de contenido, recordatorios anti no-show e informe mensual de leads. Sin sorpresas." },
+        { name: "Web que vende", desc: "Diseño moderno, móvil-first, optimizada para Google y velocidad. Con páginas legales RGPD y copywriting en español." },
+        { name: "Recepcionista de IA", desc: "AI-продавец entrenado con tu negocio: responde 24/7, cualifica leads (hot/warm/cold) y agenda consultas en tu calendario." },
+        { name: "Publicidad que trae tráfico", desc: "Meta Ads gestionados: campañas, creativos, tests A/B e informes por WhatsApp. Sin permanencias." },
       ],
     },
     pricing: {
@@ -30,19 +30,35 @@ export const dict = {
       popular: "El más elegido",
       cta: "Empezar",
       items: [
-        { name: "Presencia", price: "490€", note: "pago único", feats: ["One-page profesional", "Formulario + WhatsApp", "SEO local básico", "Dominio 1 año incluido"] },
-        { name: "Recepción IA", price: "990€", note: "o 12× 89€", feats: ["Todo lo de Presencia", "Recepcionista IA 24/7 (3 meses)", "Informe de leads", "Entrega en 72h garantizada"] },
-        { name: "Todo Incluido", price: "59€", note: "/mes", feats: ["Todo lo de Recepción IA", "IA ilimitada (cuota justa)", "Cambios de contenido", "Recordatorios anti no-show"] },
+        { name: "Start", tagline: "Landing que trae solicitudes", price: "490€", note: "pago único · 1er año sin cuota", feats: ["Entrega en 3 días", "Hasta 6 bloques", "1 idioma (español)", "Dominio + hosting + SSL incluidos", "Copywriting en español", "SEO básico + Schema.org", "Páginas legales RGPD incluidas", "Avisos por email y WhatsApp"] },
+        { name: "Business", tagline: "AI-продавez 24/7", price: "990€", note: "+ 39€/mes (o 390€/año)", feats: ["Entrega en 7 días", "Hasta 12 bloques", "2 idiomas (ES + EN/RU)", "AI 24/7: 1.000 mensajes/mes", "Base de conocimientos (30 docs)", "Cualificación de leads + mini-CRM", "Reserva de consultas (Google Calendar)", "Avisos por WhatsApp", "4 actualizaciones/año · soporte 24h"] },
       ],
-      guarantee: "Entrega en 72h o devolvemos el 100%. Tu dominio, a tu nombre, siempre.",
+      yearly: "Start: desde el 2º año solo 190€/año (hosting + dominio).",
+      guarantees: ["Pagas después de ver el demo", "Precio cerrado: sin sorpresas", "El dominio es tuyo, siempre", "Publicidad sin permanencia"],
+      ads: {
+        title: "Publicidad (opcional)",
+        items: [
+          { name: "Puesta en marcha", price: "300€", desc: "Cabina Meta + campañas + 3 creativos" },
+          { name: "Gestión mensual", price: "199€/mes", desc: "2 optimizaciones/mes, tests A/B, informes por WhatsApp" },
+        ],
+        note: "Presupuesto publicitario desde 200€/mes — pagas directamente a Meta.",
+      },
+      packages: {
+        title: "Packs con descuento",
+        items: [
+          { name: "Traffic Start", price: "449€", note: "+ 199€/mes", desc: "Puesta en marcha + 1er mes de gestión (ahorras 50€)" },
+          { name: "Full Funnel", price: "1.190€", note: "+ 39€/mes + 199€/mes", desc: "Landing Business + publicidad (ahorras 100€)" },
+        ],
+      },
+      extra: "Extras: idioma adicional +50€ · +500 mensajes IA +9€/mes · exprés 24h +30% · bloque adicional +50€ · traslado a tu hosting 99€ · dominio propio gratis",
     },
     process: {
-      title: "Online en 72 horas",
+      title: "Así de fácil",
       steps: [
-        { n: "01", t: "Hoy", d: "Llamada de 20 minutos: tu negocio, servicios y precios. Eliges plan y pagas." },
-        { n: "02", t: "24h", d: "Recibes el diseño para aprobar. Ajustamos lo que necesites." },
-        { n: "03", t: "72h", d: "Tu web está online con la IA entrenada y lista para captar clientes." },
-        { n: "04", t: "Después", d: "Soporte continuo, informes de leads y mejoras mes a mes." },
+        { n: "01", t: "Hoy", d: "Llamada de 20 minutos: tu negocio, servicios y precios." },
+        { n: "02", t: "24–72h", d: "Recibes el demo de tu web. Solo pagas cuando te guste." },
+        { n: "03", t: "3–7 días", d: "Web online con la IA entrenada y lista para vender." },
+        { n: "04", t: "Después", d: "Soporte, informes de leads y mejoras mes a mes." },
       ],
     },
     demo: {
@@ -53,11 +69,11 @@ export const dict = {
     faq: {
       title: "Preguntas frecuentes",
       items: [
-        { q: "¿De verdad entregáis en 72 horas?", a: "Sí. Trabajamos con una plataforma propia y plantillas optimizadas. Si tardamos más de 3 días laborables, te devolvemos el 100%." },
+        { q: "¿En cuánto tiempo estará lista mi web?", a: "Start: 3 días. Business: 7 días (la IA necesita entrenamiento). Te damos fecha exacta en la primera llamada." },
         { q: "¿Qué necesito para empezar?", a: "Una llamada de 20 minutos, tu lista de servicios con precios, unas fotos y tu horario. Lo demás lo hacemos nosotros." },
         { q: "¿El dominio es mío?", a: "Siempre. El dominio se registra a tu nombre desde el primer día. Si algún día te vas, te lo llevas todo." },
-        { q: "¿Y si no recibo contactos?", a: "Si en 30 días no recibes solicitudes de contacto, trabajamos gratis hasta que lleguen. Apostamos por resultados medibles." },
-        { q: "¿Puedo cancelar el plan mensual?", a: "Sí, cuando quieras. Sin permanencias ni penalizaciones. Tu web se queda contigo." },
+        { q: "¿Cuándo pago?", a: "Después de ver el demo y aprobarlo. Sin adelantos." },
+        { q: "¿Puedo cancelar cuando quiera?", a: "Sí. Ni el plan mensual ni la publicidad tienen permanencia." },
       ],
     },
     contact: {
@@ -73,8 +89,8 @@ export const dict = {
     nav: { plans: "Тарифы", process: "Как работаем", faq: "Вопросы", contact: "Контакты" },
     hero: {
       badge: "Веб-студия с ИИ · Испания",
-      title: "Сайт с ИИ-секретарём за 72 часа",
-      sub: "Лендинги для локального бизнеса: отвечают на вопросы, знают прайс и записывают клиентов в WhatsApp 24/7 — пока вы спите.",
+      title: "Сайт с ИИ-секретарём за 3–7 дней",
+      sub: "Лендинги для локального бизнеса: отвечают на вопросы, знают прайс и записывают клиентов в WhatsApp 24/7. Платите после демо.",
       cta1: "Смотреть тарифы",
       cta2: "Поговорить с ИИ",
     },
@@ -90,9 +106,9 @@ export const dict = {
     services: {
       title: "Что мы делаем",
       items: [
-        { name: "Сайт, который продаёт", desc: "Современный дизайн, mobile-first, скорость и SEO. С первого дня собирает заявки." },
-        { name: "ИИ-секретарь", desc: "Чат, обученный на ваших услугах и ценах. Отвечает 24/7, квалифицирует клиента и передаёт готовую заявку в WhatsApp." },
-        { name: "Всё включено", desc: "Хостинг, домен, правки контента, напоминания клиентам и отчёт по заявкам каждый месяц." },
+        { name: "Сайт, который продаёт", desc: "Современный дизайн, mobile-first, скорость и SEO. Юридические страницы RGPD и копирайт на испанском включены." },
+        { name: "ИИ-секретарь", desc: "AI-продавец, обученный на вашем бизнесе: отвечает 24/7, квалифицирует лиды (hot/warm/cold) и записывает на консультации." },
+        { name: "Реклама с трафиком", desc: "Meta Ads под ключ: кампании, креативы, A/B-тесты и отчёты в WhatsApp. Без обязательств." },
       ],
     },
     pricing: {
@@ -100,18 +116,34 @@ export const dict = {
       popular: "Выбирают чаще всего",
       cta: "Начать",
       items: [
-        { name: "Визитка", price: "490€", note: "разово", feats: ["One-page под ключ", "Форма + WhatsApp", "Базовое SEO", "Домен 1 год включён"] },
-        { name: "ИИ-секретарь", price: "990€", note: "или 12× 89€", feats: ["Всё из «Визитка»", "ИИ-чат 24/7 (3 месяца)", "Отчёт по заявкам", "Гарантия: 72 часа"] },
-        { name: "Всё включено", price: "59€", note: "/мес", feats: ["Всё из «ИИ-секретарь»", "ИИ без лимита (честная квота)", "Правки контента", "Напоминания клиентам"] },
+        { name: "Start", tagline: "Лендинг, который приносит заявки", price: "490€", note: "разово · 1-й год без абонплаты", feats: ["Запуск за 3 дня", "До 6 блоков", "1 язык (испанский)", "Домен + хостинг + SSL включены", "Копирайт на испанском", "Базовое SEO + Schema.org", "Юридические страницы RGPD", "Уведомления о заявках: email + WhatsApp"] },
+        { name: "Business", tagline: "AI-продавец 24/7", price: "990€", note: "+ 39€/мес (или 390€/год)", feats: ["Запуск за 7 дней", "До 12 блоков", "2 языка (ES + EN/RU)", "ИИ 24/7: 1 000 сообщений/мес", "База знаний (30 документов)", "Квалификация лидов + мини-CRM", "Запись на консультации (Google Calendar)", "Уведомления в WhatsApp", "4 обновления/год · поддержка 24ч"] },
       ],
-      guarantee: "Не успеем за 72 часа — вернём 100%. Домен оформлен на вас с первого дня.",
+      yearly: "Start: со 2-го года — всего 190€/год (хостинг + домен).",
+      guarantees: ["Платите после демо", "Фиксированная цена — без сюрпризов", "Домен ваш, с первого дня", "Реклама без обязательств"],
+      ads: {
+        title: "Реклама (опционально)",
+        items: [
+          { name: "Настройка", price: "300€", desc: "Кабинет Meta + кампании + 3 креатива" },
+          { name: "Ведение", price: "199€/мес", desc: "2 оптимизации/мес, A/B-тесты, отчёты в WhatsApp" },
+        ],
+        note: "Рекламный бюджет от 200€/мес — платите напрямую Meta.",
+      },
+      packages: {
+        title: "Пакеты со скидкой",
+        items: [
+          { name: "Traffic Start", price: "449€", note: "+ 199€/мес", desc: "Настройка + 1-й месяц ведения (экономия 50€)" },
+          { name: "Full Funnel", price: "1 190€", note: "+ 39€/мес + 199€/мес", desc: "Лендинг Business + реклама (экономия 100€)" },
+        ],
+      },
+      extra: "Дополнительно: язык +50€ · +500 ИИ-сообщений +9€/мес · экспресс 24ч +30% · блок +50€ · перенос на ваш хостинг 99€ · свой домен бесплатно",
     },
     process: {
-      title: "Онлайн за 72 часа",
+      title: "Всё просто",
       steps: [
-        { n: "01", t: "Сегодня", d: "Звонок 20 минут: услуги, цены, тариф. Оплата." },
-        { n: "02", t: "24 часа", d: "Показываем дизайн на согласование." },
-        { n: "03", t: "72 часа", d: "Сайт онлайн, ИИ обучен и принимает клиентов." },
+        { n: "01", t: "Сегодня", d: "Звонок 20 минут: услуги, цены, выбор тарифа." },
+        { n: "02", t: "24–72ч", d: "Показываем демо вашего сайта. Платите, только когда понравится." },
+        { n: "03", t: "3–7 дней", d: "Сайт онлайн, ИИ обучен и принимает клиентов." },
         { n: "04", t: "Дальше", d: "Поддержка, отчёты и улучшения каждый месяц." },
       ],
     },
@@ -123,11 +155,11 @@ export const dict = {
     faq: {
       title: "Частые вопросы",
       items: [
-        { q: "Правда 72 часа?", a: "Да. Своя платформа и отработанные шаблоны. Опоздаем больше чем на 3 рабочих дня — вернём 100%." },
+        { q: "Когда сайт будет готов?", a: "Start: 3 дня. Business: 7 дней (ИИ нужно обучить). Точную дату назовём на первом звонке." },
         { q: "Что нужно от меня?", a: "Звонок 20 минут, список услуг с ценами, фото и график. Остальное — наша работа." },
         { q: "Кому принадлежит домен?", a: "Вам, с первого дня. Решите уйти — заберёте всё." },
-        { q: "А если заявок не будет?", a: "Если за 30 дней не будет обращений — работаем бесплатно, пока не появятся." },
-        { q: "Можно отменить подписку?", a: "Да, в любой момент. Без штрафов и скрытых условий." },
+        { q: "Когда платить?", a: "После просмотра и одобрения демо. Без предоплат." },
+        { q: "Можно отменить подписку?", a: "Да, в любой момент. И подписка, и реклама — без обязательств." },
       ],
     },
     contact: {
@@ -143,8 +175,8 @@ export const dict = {
     nav: { plans: "Plans", process: "How it works", faq: "FAQ", contact: "Contact" },
     hero: {
       badge: "AI web agency · Spain",
-      title: "A website with an AI receptionist, live in 72 hours",
-      sub: "Landing pages for local businesses that answer questions, know your prices and book clients via WhatsApp 24/7 — while you sleep.",
+      title: "A website with an AI receptionist, live in 3–7 days",
+      sub: "Landing pages for local businesses that answer questions, know your prices and book clients via WhatsApp 24/7. You pay after seeing the demo.",
       cta1: "See plans",
       cta2: "Talk to the AI",
     },
@@ -160,9 +192,9 @@ export const dict = {
     services: {
       title: "What we do",
       items: [
-        { name: "A website that sells", desc: "Modern, mobile-first design, speed and SEO. Capturing enquiries from day one." },
-        { name: "AI receptionist", desc: "A chatbot trained on your services and prices. Replies 24/7, qualifies the client and hands over a ready-made WhatsApp booking." },
-        { name: "All inclusive", desc: "Hosting, domain, content updates, anti no-show reminders and a monthly leads report. No surprises." },
+        { name: "A website that sells", desc: "Modern, mobile-first design, speed and SEO. RGPD legal pages and Spanish copywriting included." },
+        { name: "AI receptionist", desc: "An AI salesperson trained on your business: replies 24/7, qualifies leads (hot/warm/cold) and books consultations into your calendar." },
+        { name: "Ads that bring traffic", desc: "Managed Meta Ads: campaigns, creatives, A/B tests and WhatsApp reports. No lock-ins." },
       ],
     },
     pricing: {
@@ -170,19 +202,35 @@ export const dict = {
       popular: "Most popular",
       cta: "Get started",
       items: [
-        { name: "Presence", price: "490€", note: "one-time", feats: ["Professional one-page", "Form + WhatsApp", "Basic local SEO", "Domain (1 year) included"] },
-        { name: "AI Reception", price: "990€", note: "or 12× 89€", feats: ["Everything in Presence", "24/7 AI receptionist (3 months)", "Leads report", "72h delivery guarantee"] },
-        { name: "All Inclusive", price: "59€", note: "/month", feats: ["Everything in AI Reception", "Unlimited AI (fair quota)", "Content updates", "Anti no-show reminders"] },
+        { name: "Start", tagline: "A landing page that brings enquiries", price: "490€", note: "one-time · no subscription in year 1", feats: ["Delivery in 3 days", "Up to 6 blocks", "1 language (Spanish)", "Domain + hosting + SSL included", "Spanish copywriting", "Basic SEO + Schema.org", "RGPD legal pages included", "Email + WhatsApp lead alerts"] },
+        { name: "Business", tagline: "24/7 AI salesperson", price: "990€", note: "+ 39€/month (or 390€/year)", feats: ["Delivery in 7 days", "Up to 12 blocks", "2 languages (ES + EN/RU)", "24/7 AI: 1,000 messages/month", "Knowledge base (30 documents)", "Lead qualification + mini-CRM", "Consultation booking (Google Calendar)", "WhatsApp alerts", "4 updates/year · 24h support"] },
       ],
-      guarantee: "Delivered in 72h or 100% money back. Your domain stays in your name, always.",
+      yearly: "Start: from year 2 only 190€/year (hosting + domain).",
+      guarantees: ["You pay after seeing the demo", "Fixed price: no surprises", "Your domain stays in your name", "No ad contract lock-ins"],
+      ads: {
+        title: "Advertising (optional)",
+        items: [
+          { name: "Setup", price: "300€", desc: "Meta ad account + campaigns + 3 creatives" },
+          { name: "Monthly management", price: "199€/month", desc: "2 optimizations/month, A/B tests, WhatsApp reports" },
+        ],
+        note: "Ad budget from 200€/month — paid directly to Meta.",
+      },
+      packages: {
+        title: "Discounted packages",
+        items: [
+          { name: "Traffic Start", price: "449€", note: "+ 199€/month", desc: "Setup + 1st month of management (save 50€)" },
+          { name: "Full Funnel", price: "1,190€", note: "+ 39€/month + 199€/month", desc: "Business landing + advertising (save 100€)" },
+        ],
+      },
+      extra: "Extras: extra language +50€ · +500 AI messages +9€/month · 24h express +30% · extra block +50€ · move to your hosting 99€ · custom domain free",
     },
     process: {
-      title: "Online in 72 hours",
+      title: "As easy as it gets",
       steps: [
-        { n: "01", t: "Today", d: "20-minute call: your services, prices and plan. Payment." },
-        { n: "02", t: "24h", d: "You receive the design for approval." },
-        { n: "03", t: "72h", d: "Your site is live with the trained AI capturing clients." },
-        { n: "04", t: "After", d: "Ongoing support, reports and improvements." },
+        { n: "01", t: "Today", d: "20-minute call: your services, prices and plan." },
+        { n: "02", t: "24–72h", d: "You receive a demo of your website. Pay only when you love it." },
+        { n: "03", t: "3–7 days", d: "Site live with the trained AI capturing clients." },
+        { n: "04", t: "After", d: "Ongoing support, lead reports and improvements." },
       ],
     },
     demo: {
@@ -193,11 +241,11 @@ export const dict = {
     faq: {
       title: "Frequently asked questions",
       items: [
-        { q: "Really 72 hours?", a: "Yes. Our own platform and battle-tested templates. If we're more than 3 business days late, you get a 100% refund." },
+        { q: "When will my website be ready?", a: "Start: 3 days. Business: 7 days (the AI needs training). We give you an exact date on the first call." },
         { q: "What do you need from me?", a: "A 20-minute call, your service list with prices, a few photos and your opening hours. We handle the rest." },
         { q: "Who owns the domain?", a: "You do, from day one. If you ever leave, you take everything with you." },
-        { q: "What if I get no enquiries?", a: "If you receive zero enquiries in 30 days, we keep working for free until they come in." },
-        { q: "Can I cancel the monthly plan?", a: "Anytime. No lock-ins, no penalties." },
+        { q: "When do I pay?", a: "After seeing and approving the demo. No upfront payments." },
+        { q: "Can I cancel anytime?", a: "Yes. Neither the monthly plan nor advertising has any lock-in." },
       ],
     },
     contact: {

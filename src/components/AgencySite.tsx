@@ -117,9 +117,9 @@ export function AgencySite({ site }: { site: { name: string } }) {
 
       {/* PRICING */}
       <section id="planes" className="px-6 py-20">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-4xl">
           <h2 className="text-center text-3xl font-bold">{t.pricing.title}</h2>
-          <div className="mt-12 grid items-stretch gap-6 md:grid-cols-3">
+          <div className="mt-12 grid items-stretch gap-6 md:grid-cols-2">
             {t.pricing.items.map((p, i) => (
               <div
                 key={i}
@@ -136,7 +136,8 @@ export function AgencySite({ site }: { site: { name: string } }) {
                     {t.pricing.popular}
                   </span>
                 )}
-                <h3 className="font-semibold">{p.name}</h3>
+                <h3 className="text-lg font-semibold">{p.name}</h3>
+                <p className={`text-sm ${i === 1 ? "text-slate-300" : "text-slate-500"}`}>{p.tagline}</p>
                 <p className="mt-2">
                   <span className="text-4xl font-bold">{p.price}</span>{" "}
                   <span className={i === 1 ? "text-slate-300" : "text-slate-500"}>{p.note}</span>
@@ -158,7 +159,51 @@ export function AgencySite({ site }: { site: { name: string } }) {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center font-medium text-slate-600">{t.pricing.guarantee}</p>
+
+          <p className="mt-6 text-center text-sm text-slate-500">{t.pricing.yearly}</p>
+
+          {/* GUARANTEES */}
+          <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-2">
+            {t.pricing.guarantees.map((g, i) => (
+              <div key={i} className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900">
+                <span className="text-lg">✓</span> {g}
+              </div>
+            ))}
+          </div>
+
+          {/* ADS */}
+          <h3 className="mt-16 text-center text-2xl font-bold">{t.pricing.ads.title}</h3>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            {t.pricing.ads.items.map((a, i) => (
+              <div key={i} className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+                <div className="flex items-baseline justify-between">
+                  <h4 className="font-semibold">{a.name}</h4>
+                  <span className="text-2xl font-bold" style={{ color: primary }}>{a.price}</span>
+                </div>
+                <p className="mt-2 text-sm text-slate-600">{a.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-center text-sm text-slate-500">{t.pricing.ads.note}</p>
+
+          {/* PACKAGES */}
+          <h3 className="mt-16 text-center text-2xl font-bold">{t.pricing.packages.title}</h3>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            {t.pricing.packages.items.map((p, i) => (
+              <div key={i} className="rounded-2xl border-2 p-7" style={{ borderColor: accent }}>
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="font-semibold">{p.name}</h4>
+                  <p className="text-right">
+                    <span className="text-2xl font-bold">{p.price}</span>{" "}
+                    <span className="text-sm text-slate-500">{p.note}</span>
+                  </p>
+                </div>
+                <p className="mt-2 text-sm text-slate-600">{p.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-10 text-center text-xs text-slate-400">{t.pricing.extra}</p>
         </div>
       </section>
 
