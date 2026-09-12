@@ -12,7 +12,7 @@ const ENDPOINTS: Record<string, string> = {
 const DEFAULT_MODELS: Record<string, string> = {
   mistral: "mistral-small-latest",
   openai: "gpt-4o-mini",
-  deepseek: "deepseek-chat",
+  deepseek: "deepseek-flash", // modelo actual (deepseek-chat ya no existe)
 };
 
 export async function aiChat(system: string, messages: ChatMessage[]): Promise<string> {
