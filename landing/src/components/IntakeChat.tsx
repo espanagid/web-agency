@@ -89,6 +89,42 @@ function detectLang(text: string): Lang | null {
   return hits >= 1 ? "en" : null;
 }
 
+/**
+ * Мини-FAQ: типовые вопросы, на которые сценарный агент отвечает сразу,
+ * а затем мягко возвращает клиента к текущему шагу. Мультиязычные паттерны —
+ * вопрос может прийти не на языке интерфейса.
+ */
+const FAQ_RULES: { re: RegExp; key: "faqPrice" | "faqTime" | "faqHuman" | "faqWhat" }[] = [
+  {
+    re: /precio|cu[aá]nto (cuesta|vale|es|son)|coste|\bprice\b|\bcost\b|тариф|цен[аыу]|сколько.{0,20}(стоит|стоимость)|стоимост|поч[её]м/i,
+    key: "faqPrice",
+  },
+  {
+    re: /cu[aá]nto tarda|plazo|cu[aá]ndo|how long|\bwhen\b|срок|когда|сколько (ждать|времени)/i,
+    key: "faqTime",
+  },
+  {
+    re: /humano|persona real|hablar con alguien|real person|\bhuman\b|человек|оператор|жив(ой|ого|ым)/i,
+    key: "faqHuman",
+  },
+  {
+    re: /qu[eé] es esto|para qu[eé]|what is this|what's this|что это|зачем это|что за/i,
+    key: "faqWhat",
+  },
+];
+
+/** Похоже ли сообщение на вопрос (короткое + вопросительные маркеры) */
+function isQuestion(text: string): boolean {
+  const t = text.trim();
+  if (t.length > 100) return false; // длинный текст — скорее контент брифа
+  return (
+    /[?¿]/.test(t) ||
+    /^(por qu[eé]|c[oó]mo|cu[aá]nto|cu[aá]ndo|qu[eé]|d[oó]nde|why|how|what|when|who|where|почему|зачем|как|что|когда|сколько|где|кто)\b/i.test(
+      t
+    )
+  );
+}
+
 const SUMMARY_LABELS: Record<Lang, Record<string, string>> = {
   es: {
     title: "NUEVO BRIEF — DEMO GRATIS",
@@ -277,6 +313,34 @@ export default function IntakeChat() {
     next();
   }
 
+  /** Повторно задаёт вопрос текущего шага (после ответа на отвлечённый вопрос) */
+  function reAsk(dict = d): string {
+    switch (step) {
+      case "name":
+        return dict.askName;
+      case "business":
+        return dict.askBusiness.replace("{name}", data.current.name || "");
+      case "sector":
+        return dict.askSector;
+      case "sectorFree":
+        return dict.askSectorFree;
+      case "desc":
+        return dict.askDesc;
+      case "desc2":
+        return dict.descFollowUp;
+      case "colors":
+        return dict.askColors;
+      case "logo":
+        return dict.askLogo;
+      case "contact":
+        return dict.askContact;
+      case "extra":
+        return dict.askExtra;
+      default:
+        return "";
+    }
+  }
+
   /** Обработка текстового ответа пользователя по текущему шагу */
   function handleText(raw: string) {
     const text = raw.trim();
@@ -285,6 +349,24 @@ export default function IntakeChat() {
     setInput("");
     const v = data.current;
     const wantDetect = DETECT_STEPS.has(step);
+
+    // 1) Типовой вопрос (цена, сроки, «дайте человека»...) — отвечаем сразу
+    //    и возвращаем к текущему шагу. Только для коротких сообщений: длинный
+    //    текст — это контент брифа, а не вопрос.
+    if (text.length < 100) {
+      // отвечаем на вопрос на том языке, на котором он задан
+      const qDict = DICTS[detectLang(text) ?? chatLang].intake;
+      const faq = FAQ_RULES.find((f) => f.re.test(text));
+      if (faq) {
+        pushAi(`${qDict[faq.key]}\n\n${reAsk(qDict)}`);
+        return;
+      }
+      // 2) Нестандартный вопрос — честно фиксируем, не делаем вид, что поняли
+      if (isQuestion(text) && step !== "contact") {
+        pushAi(`${qDict.fallbackUnknown}\n\n${reAsk(qDict)}`);
+        return;
+      }
+    }
 
     switch (step) {
       case "name": {

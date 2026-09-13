@@ -135,6 +135,12 @@ export interface Dict {
     langOffer: string;
     langSwitch: string;
     langStay: string;
+    askName: string;
+    fallbackUnknown: string;
+    faqPrice: string;
+    faqTime: string;
+    faqHuman: string;
+    faqWhat: string;
   };
   footer: {
     eyebrow: string;
@@ -509,5 +515,15 @@ export const es: Dict = {
     langOffer: "¡Perfecto, puedo hablar en español! 😊 ¿Seguimos en español?",
     langSwitch: "Sí, en español",
     langStay: "No, sigo en este idioma",
+    askName: "¿Cómo te llamas?",
+    fallbackUnknown:
+      "Buena pregunta — la anoto en el brief y te responde una persona en cuanto lo reciba.",
+    faqPrice:
+      "La demo es 100% gratis y sin compromiso. Si luego te enamora, las tarifas empiezan en 490 € (pago único) — pero eso lo decides después de verla.",
+    faqTime: "Tu demo estará lista en 72 horas desde que reciba el brief completo.",
+    faqHuman:
+      "Claro — puedes hablar con una persona real en el WhatsApp +34 603 081 081 (respondo en menos de 2 horas).",
+    faqWhat:
+      "Te preparo una web demo con tu contenido real para que la veas funcionando antes de decidir nada. Sin tarjeta ni permanencia.",
   },
 };

@@ -361,5 +361,15 @@ export const en: Dict = {
     langOffer: "Looks like English is easier for you 😊 Shall we continue in English?",
     langSwitch: "Yes, in English",
     langStay: "No, keep this language",
+    askName: "What's your name?",
+    fallbackUnknown:
+      "Good question — I'm noting it in the brief and a human will answer you personally as soon as it arrives.",
+    faqPrice:
+      "The demo is 100% free, no strings attached. If you love it afterwards, plans start at €490 (one-off payment) — but you decide that once you've seen it.",
+    faqTime: "Your demo will be ready within 72 hours of receiving your full brief.",
+    faqHuman:
+      "Of course — you can talk to a real person on WhatsApp +34 603 081 081 (I reply within 2 hours).",
+    faqWhat:
+      "I'll prepare a free demo website with your real content so you can see it working before deciding anything. No card, no commitment.",
   },
 };
