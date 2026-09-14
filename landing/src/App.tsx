@@ -10,6 +10,9 @@ export default function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/aviso-legal" element={<Legal doc="aviso" />} />
+      <Route path="/privacidad" element={<Legal doc="privacidad" />} />
+      <Route path="/cookies" element={<Legal doc="cookies" />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )
