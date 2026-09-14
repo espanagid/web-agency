@@ -9,6 +9,20 @@ import {
 } from "./queries/leads";
 import { readLeadFileBase64 } from "./lib/storage";
 
+/** антиспам: не более 5 заявок в час с одного IP */
+const submitRate = new Map<string, { count: number; reset: number }>();
+
+function submitRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const slot = submitRate.get(ip);
+  if (!slot || slot.reset < now) {
+    submitRate.set(ip, { count: 1, reset: now + 3600_000 });
+    return false;
+  }
+  slot.count++;
+  return slot.count > 5;
+}
+
 const fileInput = z.object({
   filename: z.string().min(1).max(250),
   mime: z.string().max(110),
@@ -31,10 +45,19 @@ export const leadsRouter = createRouter({
         transcript: z.string().max(60000).optional(),
         summary: z.string().max(12000).optional(),
         files: z.array(fileInput).max(6).default([]),
+        // honeypot: невидимое поле; люди его не заполняют, боты — да
+        website: z.string().max(200).optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      const { files, ...lead } = input;
+    .mutation(async ({ input, ctx }) => {
+      // бот, заполнивший honeypot, получает фейковый успех — заявка не сохраняется
+      if (input.website) return { id: -1 };
+      const ip =
+        ctx.req.headers.get("x-real-ip") ||
+        (ctx.req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() ||
+        "unknown";
+      if (submitRateLimited(ip)) return { id: -1 };
+      const { files, website: _hp, ...lead } = input;
       const id = await createLead(lead, files);
       return { id };
     }),

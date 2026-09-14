@@ -182,6 +182,8 @@ export default function IntakeChat() {
   const [step, setStep] = useState<Step>("name");
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  // honeypot-поле: невидимо для людей, боты его заполняют
+  const [honeypot, setHoneypot] = useState("");
   const [detectedLang, setDetectedLang] = useState<Lang>("es");
 
   // собранные данные
@@ -675,6 +677,7 @@ export default function IntakeChat() {
         transcript: transcript || undefined,
         summary,
         files,
+        website: honeypot,
       });
       pushAi(`${d.successTitle}\n${d.successText}`, "success");
       setStep("done");
@@ -841,6 +844,17 @@ export default function IntakeChat() {
           disabled={!inputEnabled}
           placeholder={d.inputPlaceholder}
           className="h-11 flex-1 rounded-full border border-cream/15 bg-cream/5 px-5 text-sm text-cream placeholder:text-sage/60 focus:border-lime/60 focus:outline-none disabled:opacity-40"
+        />
+        {/* honeypot: скрыто от людей и скринридеров */}
+        <input
+          type="text"
+          name="website"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-[9999px] h-0 w-0 opacity-0"
         />
         <button
           onClick={() => handleText(input)}
