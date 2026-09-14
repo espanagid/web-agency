@@ -401,6 +401,10 @@ export default function IntakeChat() {
     } catch {
       setTyping(false);
       llmOff.current = true;
+      // через 3 минуты пробуем LLM снова (переживаем временную деградацию API)
+      window.setTimeout(() => {
+        llmOff.current = false;
+      }, 3 * 60_000);
       // скрипт обрабатывает это же сообщение без повторного показа
       handleScripted(text, true);
     }

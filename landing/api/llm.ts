@@ -6,8 +6,8 @@ import type { HttpBindings } from "@hono/node-server";
  * Ключ живёт только на сервере (DEEPSEEK_API_KEY в .env).
  */
 
-const LLM_URL = "https://api.deepseek.com/chat/completions";
-const MODEL = "deepseek-chat";
+const LLM_URL = process.env.LLM_BASE_URL || "https://api.deepseek.com/chat/completions";
+const MODEL = process.env.LLM_MODEL || "deepseek-chat";
 
 const SYSTEM_PROMPT = `Eres el asistente de admisión de Webalo (webalo.eu), una agencia española que crea webs con recepcionista de IA para pymes. Tu objetivo: preparar el brief para una DEMO WEB GRATUITA que se entrega en 72 horas.
 
@@ -85,7 +85,7 @@ export function registerLlmRoute(app: Hono<{ Bindings: HttpBindings }>) {
           max_tokens: 700,
           messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
         }),
-        signal: AbortSignal.timeout(30_000),
+        signal: AbortSignal.timeout(45_000),
       });
       if (!resp.ok) return c.json({ error: "llm_error", status: resp.status }, 502);
       const j = (await resp.json()) as { choices?: { message?: { content?: string } }[] };
