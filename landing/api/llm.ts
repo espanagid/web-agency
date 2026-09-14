@@ -6,8 +6,34 @@ import type { HttpBindings } from "@hono/node-server";
  * Ключ живёт только на сервере (DEEPSEEK_API_KEY в .env).
  */
 
-const LLM_URL = process.env.LLM_BASE_URL || "https://api.deepseek.com/chat/completions";
-const MODEL = process.env.LLM_MODEL || "deepseek-chat";
+/**
+ * Цепочка провайдеров: Gemini (основной, RGPD-чистый, DPA Google) →
+ * DeepSeek (резерв) → ошибка (фронт уходит на скриптовый сценарий).
+ * Оба — OpenAI-совместимые chat/completions.
+ */
+interface Provider {
+  name: string;
+  url: string;
+  model: string;
+  key: string | undefined;
+}
+
+function providerChain(): Provider[] {
+  return [
+    {
+      name: "gemini",
+      url: process.env.GEMINI_BASE_URL || "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      key: process.env.GEMINI_API_KEY,
+    },
+    {
+      name: "deepseek",
+      url: process.env.LLM_BASE_URL || "https://api.deepseek.com/chat/completions",
+      model: process.env.LLM_MODEL || "deepseek-chat",
+      key: process.env.DEEPSEEK_API_KEY,
+    },
+  ].filter((p) => p.key);
+}
 
 const SYSTEM_PROMPT = `Eres el asistente de admisión de Webalo (webalo.eu), una agencia española que crea webs con recepcionista de IA para pymes. Tu objetivo: preparar el brief para una DEMO WEB GRATUITA que se entrega en 72 horas.
 
@@ -46,8 +72,8 @@ type Msg = { role: string; content: string };
 
 export function registerLlmRoute(app: Hono<{ Bindings: HttpBindings }>) {
   app.post("/api/llm-chat", async (c) => {
-    const key = process.env.DEEPSEEK_API_KEY;
-    if (!key) return c.json({ error: "llm_unavailable" }, 503);
+    const providers = providerChain();
+    if (!providers.length) return c.json({ error: "llm_unavailable" }, 503);
 
     const ip =
       c.req.header("x-real-ip") || (c.req.header("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
@@ -75,23 +101,32 @@ export function registerLlmRoute(app: Hono<{ Bindings: HttpBindings }>) {
       return c.json({ error: "bad_request" }, 400);
     }
 
-    try {
-      const resp = await fetch(LLM_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({
-          model: MODEL,
-          temperature: 0.6,
-          max_tokens: 700,
-          messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
-        }),
-        signal: AbortSignal.timeout(45_000),
-      });
-      if (!resp.ok) return c.json({ error: "llm_error", status: resp.status }, 502);
-      const j = (await resp.json()) as { choices?: { message?: { content?: string } }[] };
-      return c.json({ reply: j.choices?.[0]?.message?.content ?? "" });
-    } catch {
-      return c.json({ error: "llm_error" }, 502);
+    // пробуем провайдеров по очереди: сбой/таймаут одного — переходим к следующему
+    for (const p of providers) {
+      try {
+        const resp = await fetch(p.url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${p.key}` },
+          body: JSON.stringify({
+            model: p.model,
+            temperature: 0.6,
+            max_tokens: 700,
+            messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+          }),
+          signal: AbortSignal.timeout(30_000),
+        });
+        if (!resp.ok) {
+          console.warn(`[llm] ${p.name} HTTP ${resp.status}`);
+          continue;
+        }
+        const j = (await resp.json()) as { choices?: { message?: { content?: string } }[] };
+        const reply = j.choices?.[0]?.message?.content ?? "";
+        if (!reply) continue;
+        return c.json({ reply, provider: p.name });
+      } catch (e) {
+        console.warn(`[llm] ${p.name} failed:`, (e as Error).message);
+      }
     }
+    return c.json({ error: "llm_error" }, 502);
   });
 }
