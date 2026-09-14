@@ -12,7 +12,7 @@ export default function Compare() {
         </SplitText>
         <SplitText as="h2" className="display-section max-w-4xl text-cream">
           {t.compare.titleA} <span className="text-sage">{t.compare.titleVs}</span>{" "}
-          <span className="display-accent">webs·con·ia</span>
+          <span className="display-accent">web·alo</span>
         </SplitText>
 
         <FadeIn className="mt-16 overflow-hidden rounded-3xl border border-cream/12">

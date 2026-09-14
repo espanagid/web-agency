@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SplitText from "../components/SplitText";
+import SplitText, { FadeIn } from "../components/SplitText";
 import MagneticButton from "../components/MagneticButton";
 import { scrollToId } from "../lib/scroll";
 import { useLang } from "../i18n";
@@ -194,6 +194,16 @@ export default function Hero({ instant = false }: { instant?: boolean }) {
               {t.hero.cta2}
             </MagneticButton>
           </div>
+
+          <FadeIn delay={D + 0.6} className="mt-6">
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-lime/25 bg-lime/5 px-4 py-2 text-xs font-semibold text-lime">
+              <span
+                className="inline-block h-1.5 w-1.5 rounded-full bg-lime"
+                style={{ animation: "pulse-glow 2s infinite" }}
+              />
+              {t.hero.badge}
+            </div>
+          </FadeIn>
 
           <div className="mt-14 flex flex-wrap gap-10 border-t border-cream/10 pt-8">
             {t.hero.stats.map((s) => (

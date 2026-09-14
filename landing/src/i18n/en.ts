@@ -17,6 +17,7 @@ export const en: Dict = {
     sub: "We build landing pages with an AI receptionist that replies instantly, qualifies clients and books appointments on WhatsApp — even at 3 AM.",
     cta1: "I want my free demo",
     cta2: "See pricing",
+    badge: "Free demo in 72 hours · No card, no commitment",
     stats: [
       { v: "72", u: "h", l: "from zero to online" },
       { v: "24/7", u: "", l: "AI replies and books" },
@@ -121,10 +122,12 @@ export const en: Dict = {
     sendTitle: "What you send us",
     send: [
       "Your business name and description",
+      "Link to your current website, if you have one",
       "Your logo (if you don't have one, we'll generate it)",
       "The colors you like",
-      "Contact details and WhatsApp",
+      "Examples of websites you like",
       "Photos of your work, if you have any",
+      "Contact details and WhatsApp",
       "Any info you consider useful",
     ],
     getTitle: "What you get in 72 hours",
@@ -271,6 +274,10 @@ export const en: Dict = {
       {
         q: "What if I need changes later?",
         a: "Start includes one update per year; Business, four. One-off changes (a price, a schedule) are done in 24–48 h via WhatsApp. No tickets, no waiting.",
+      },
+      {
+        q: "What if I don't like the demo?",
+        a: "Nothing happens: we simply don't continue. No payments, no commitment, no pushy follow-up calls. You keep the ideas and the structure you've seen — they're yours. You decide, always after seeing the result.",
       },
     ],
   },

@@ -74,6 +74,9 @@ export interface Dict {
     bottom1: string;
     bottomLink: string;
     bottom2: string;
+    recon1: string;
+    reconLink: string;
+    recon2: string;
   };
   compare: {
     eyebrow: string;
@@ -275,10 +278,12 @@ export const es: Dict = {
     sendTitle: "Qué nos envías",
     send: [
       "Nombre y descripción de tu negocio",
+      "Enlace a tu web actual, si la tienes",
       "Tu logo (si no tienes, te generamos uno)",
       "Los colores que te gustan",
-      "Datos de contacto y WhatsApp",
+      "Ejemplos de webs que te gustan",
       "Fotos de tu trabajo, si tienes",
+      "Datos de contacto y WhatsApp",
       "Cualquier info que creas útil",
     ],
     getTitle: "Qué recibes en 72 horas",
@@ -332,10 +337,14 @@ export const es: Dict = {
         features: [
           "Landing de hasta 6 bloques",
           "Copy persuasivo en español incluido",
-          "Dominio .es/.com + hosting + SSL",
+          "Diseño responsive: móvil, tablet y PC",
+          "Dominio .es/.com + hosting + SSL el primer año",
           "Páginas legales RGPD, Aviso legal, Cookies",
           "SEO básico + Schema.org",
-          "Avisos de leads por Email + WhatsApp",
+          "Botón de WhatsApp + aviso de cada lead al instante",
+          "Imágenes optimizadas y carga ultrarrápida",
+          "2 rondas de cambios tras la entrega",
+          "Todos los accesos son tuyos: dominio, hosting, web",
           "Entrega en 3 días",
         ],
         cta: "Empezar con Start",
@@ -425,6 +434,10 @@ export const es: Dict = {
       {
         q: "¿Y si necesito cambios después?",
         a: "Start incluye una actualización al año; Business, cuatro. Cambios puntuales (un precio, un horario) se hacen en 24–48 h por WhatsApp. Sin tickets, sin esperas.",
+      },
+      {
+        q: "¿Y si la demo no me gusta?",
+        a: "No pasa nada: simplemente no seguimos. Sin pagos, sin compromiso y sin llamadas insistentes. Te quedas con las ideas y la estructura que has visto — son tuyas. Decides tú, siempre después de ver el resultado.",
       },
     ],
   },

@@ -90,6 +90,23 @@ export default function Pricing() {
           ))}
         </div>
 
+        <FadeIn delay={0.1} className="mt-10">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-lime/20 bg-olive-deep/60 px-6 py-5 text-center sm:px-8">
+            <p className="text-sm leading-relaxed text-sage">
+              {t.pricing.recon1}{" "}
+              <a
+                href={WA_LINK_PLAN("reconstrucción")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="u-link whitespace-nowrap text-lime"
+              >
+                {t.pricing.reconLink}
+              </a>{" "}
+              {t.pricing.recon2}
+            </p>
+          </div>
+        </FadeIn>
+
         <FadeIn delay={0.15} className="mt-10 text-center">
           <p className="text-sm text-sage">
             {t.pricing.bottom1}{" "}
