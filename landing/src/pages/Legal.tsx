@@ -2,15 +2,11 @@ import { useEffect } from "react";
 import { Link } from "react-router";
 import { SITE } from "../lib/site";
 
-/**
- * Юридические страницы (LSSI / RGPD / cookies).
- * TODO перед запуском рекламы: заменить поля [NOMBRE], [NIF], [DIRECCIÓN]
- * реальными данными автономо.
- */
+/** Юридические страницы (LSSI / RGPD / cookies). Данные автономо — ниже. */
 const OWNER = {
-  name: "[NOMBRE Y APELLIDOS]",
-  nif: "[NIF/DNI]",
-  address: "[DIRECCIÓN COMPLETA, ESPAÑA]",
+  name: "Vitalii Ponomarev",
+  nif: "Y7280436F",
+  address: "Calle Uranio, 29, 1-5, 46520 Puerto de Sagunto, Valencia, España",
 };
 
 type DocKey = "aviso" | "privacidad" | "cookies";
