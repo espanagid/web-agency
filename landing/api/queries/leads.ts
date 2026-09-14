@@ -1,5 +1,6 @@
 import { getDb } from "./connection";
 import { leads, leadFiles, type InsertLead, type Lead } from "@db/schema";
+import { saveLeadFile } from "../lib/storage";
 import { desc, eq, sql } from "drizzle-orm";
 
 export async function createLead(
@@ -16,7 +17,8 @@ export async function createLead(
         filename: f.filename.slice(0, 250),
         mime: f.mime.slice(0, 110),
         size: Math.round((f.dataBase64.length * 3) / 4),
-        data: f.dataBase64,
+        path: saveLeadFile(leadId, f.filename, f.dataBase64),
+        data: "",
       }))
     );
   }

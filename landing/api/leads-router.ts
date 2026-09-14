@@ -7,6 +7,7 @@ import {
   listLeads,
   setLeadStatus,
 } from "./queries/leads";
+import { readLeadFileBase64 } from "./lib/storage";
 
 const fileInput = z.object({
   filename: z.string().min(1).max(250),
@@ -52,7 +53,9 @@ export const leadsRouter = createRouter({
     .query(async ({ input }) => {
       const f = await getLeadFile(input.id);
       if (!f) return null;
-      return { filename: f.filename, mime: f.mime, dataBase64: f.data };
+      // новые файлы — с диска; старые записи — legacy base64 из БД
+      const dataBase64 = f.path ? readLeadFileBase64(f.path) : f.data;
+      return { filename: f.filename, mime: f.mime, dataBase64 };
     }),
 
   setStatus: adminQuery

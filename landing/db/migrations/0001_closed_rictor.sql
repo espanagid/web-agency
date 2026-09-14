@@ -1,0 +1,1 @@
+ALTER TABLE `lead_files` ADD `path` varchar(500);

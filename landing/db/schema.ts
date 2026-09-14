@@ -70,7 +70,10 @@ export const leadFiles = mysqlTable("lead_files", {
   filename: varchar("filename", { length: 255 }).notNull(),
   mime: varchar("mime", { length: 120 }).notNull(),
   size: int("size").notNull().default(0),
-  data: longtext("data").notNull(), // base64
+  /** путь к файлу на диске (новые файлы); у старых записей NULL — данные в data */
+  path: varchar("path", { length: 500 }),
+  /** legacy: base64 (старые записи); у новых пустая строка */
+  data: longtext("data").notNull(),
 });
 
 export type LeadFile = typeof leadFiles.$inferSelect;
