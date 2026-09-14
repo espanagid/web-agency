@@ -1,7 +1,9 @@
 export const SITE = {
-  name: "Webs con IA",
+  name: "Webalo",
+  domain: "webalo.eu",
+  url: "https://webalo.eu",
   whatsapp: "34603081081",
-  email: "hola@websconia.es",
+  email: "hola@webalo.eu",
 };
 
 export const WA_LINK = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(

@@ -71,8 +71,7 @@ export default function Footer() {
       <div className="border-t border-cream/10 px-5 py-8 sm:px-8">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 text-xs text-sage sm:flex-row">
           <div className="font-display text-base italic text-cream">
-            webs<span className="not-italic text-lime">·</span>con
-            <span className="not-italic text-lime">·</span>ia
+            web<span className="not-italic text-lime">·</span>alo
           </div>
           <div className="flex items-center gap-6">
             <a href={`mailto:${SITE.email}`} className="u-link transition-colors hover:text-cream">

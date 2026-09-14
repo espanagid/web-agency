@@ -29,8 +29,7 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
   return (
     <div ref={rootRef} className="preloader" style={{ clipPath: "inset(0 0 0% 0)" }}>
       <div className="font-display italic text-cream text-2xl">
-        webs<span className="text-lime not-italic">·</span>con
-        <span className="text-lime not-italic">·</span>ia
+        web<span className="text-lime not-italic">·</span>alo
       </div>
       <div className="tnum font-display text-lime text-[clamp(4rem,10vw,9rem)] leading-none">
         {num}

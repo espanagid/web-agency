@@ -66,10 +66,9 @@ export default function Header() {
           <button
             onClick={() => go("#top")}
             className="font-display text-xl italic text-cream"
-            aria-label="Webs con IA — inicio"
+            aria-label="Webalo — inicio"
           >
-            webs<span className="not-italic text-lime">·</span>con
-            <span className="not-italic text-lime">·</span>ia
+            web<span className="not-italic text-lime">·</span>alo
           </button>
 
           <nav className="hidden items-center gap-8 lg:flex">

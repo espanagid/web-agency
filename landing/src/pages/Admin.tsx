@@ -108,7 +108,7 @@ export default function Admin() {
           <div>
             <h1 className="font-display text-3xl italic">Заявки на демо</h1>
             <p className="mt-1 text-xs uppercase tracking-[0.22em] text-sage">
-              Webs con IA · {leads.data?.length ?? 0} заявок
+              Webalo · {leads.data?.length ?? 0} заявок
             </p>
           </div>
           <button onClick={logout} className="u-link text-sm text-sage hover:text-cream">

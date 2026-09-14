@@ -234,7 +234,7 @@ export const en: Dict = {
     titleA: "Traditional agency",
     titleVs: "vs.",
     colA: "Traditional agency",
-    colB: "Webs con IA",
+    colB: "Webalo",
     rows: [
       ["3–6 weeks of waiting", "72 hours and you're selling"],
       ["The website “dies” after delivery", "AI that replies and books 24/7"],
@@ -282,7 +282,7 @@ export const en: Dict = {
     note: "Reply in under 2 hours · No commitment · I'll honestly tell you if you need it",
     marquee: "Let's talk",
     marqueeQ: "?",
-    rights: "© 2026 Webs con IA · Made in Spain",
+    rights: "© 2026 Webalo · Made in Spain",
   },
   cases: {
     eyebrow: "Pilot cases",
@@ -319,9 +319,9 @@ export const en: Dict = {
     ],
   },
   intake: {
-    aiName: "AI Assistant · Webs con IA",
+    aiName: "AI Assistant · Webalo",
     greeting:
-      "Hi! I'm the Webs con IA assistant. I'll put together the brief for your free demo — it takes 2 minutes. What's your name?",
+      "Hi! I'm Webalo's AI assistant — websites that answer every client. I'll put together the brief for your free demo — it takes 2 minutes. What's your name?",
     askBusiness: "Nice to meet you, {name} 👋 What's your business called?",
     askSector: "What does it do?",
     sectors: ["Dental clinic", "Law firm", "Renovations", "Psychology", "Restaurant / bar", "Other"],
