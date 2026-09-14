@@ -43,7 +43,7 @@ export default function Pricing() {
                 >
                   {p.tag}
                 </div>
-                <h3 className="mt-3 font-display text-3xl">{p.id}</h3>
+                <h3 className="mt-3 font-display text-3xl">{p.name}</h3>
                 <div className="mt-5 flex items-baseline gap-2">
                   <span className="tnum font-display text-5xl">{p.price}</span>
                   <span className={`text-sm ${p.highlight ? "text-ink/70" : "text-sage"}`}>{p.per}</span>

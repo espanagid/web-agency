@@ -87,6 +87,17 @@ export default function Footer() {
               WhatsApp
             </a>
           </div>
+          <div className="flex items-center gap-4">
+            <Link to="/aviso-legal" className="u-link transition-colors hover:text-cream">
+              Aviso legal
+            </Link>
+            <Link to="/privacidad" className="u-link transition-colors hover:text-cream">
+              Privacidad
+            </Link>
+            <Link to="/cookies" className="u-link transition-colors hover:text-cream">
+              Cookies
+            </Link>
+          </div>
           <div>{t.footer.rights}</div>
         </div>
       </div>

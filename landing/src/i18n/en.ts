@@ -174,6 +174,7 @@ export const en: Dict = {
     plans: [
       {
         id: "Start",
+        name: "Start",
         tag: "To start selling",
         price: "€490",
         per: "one-time payment",
@@ -192,6 +193,7 @@ export const en: Dict = {
       },
       {
         id: "Business",
+        name: "Business",
         tag: "The bestseller",
         price: "€990",
         per: "+ €39/month",
@@ -212,6 +214,7 @@ export const en: Dict = {
       },
       {
         id: "Advertising",
+        name: "Advertising",
         tag: "Accelerator",
         price: "€300",
         per: "+ €199/month",
@@ -231,6 +234,9 @@ export const en: Dict = {
     bottom1: "Not sure which one to pick? Message me and I'll honestly tell you what you need —",
     bottomLink: "even if it's none of them",
     bottom2: ".",
+    recon1: "Already have an old website? A full rebuild is cheaper than starting from scratch: Start €399 · Business €899 + €39/month — we keep your useful content.",
+    reconLink: "Ask for a quote on WhatsApp",
+    recon2: "and I'll reply today.",
   },
   compare: {
     eyebrow: "The difference",

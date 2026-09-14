@@ -172,6 +172,7 @@ export const ru: Dict = {
     plans: [
       {
         id: "Start",
+        name: "Start",
         tag: "Чтобы начать продавать",
         price: "490 €",
         per: "разовый платёж",
@@ -194,6 +195,7 @@ export const ru: Dict = {
       },
       {
         id: "Business",
+        name: "Business",
         tag: "Самый продающий",
         price: "990 €",
         per: "+ 39 €/мес",
@@ -214,6 +216,7 @@ export const ru: Dict = {
       },
       {
         id: "Publicidad",
+        name: "Реклама",
         tag: "Ускоритель",
         price: "300 €",
         per: "+ 199 €/мес",
@@ -233,6 +236,9 @@ export const ru: Dict = {
     bottom1: "Не знаете, что выбрать? Напишите — честно скажу, что вам нужно,",
     bottomLink: "даже если ничего",
     bottom2: ".",
+    recon1: "Уже есть старый сайт? Полная реконструкция выгоднее, чем создавать с нуля: Start 399 € · Business 899 € + 39 €/мес — сохраняем полезный контент.",
+    reconLink: "Запросите расчёт в WhatsApp",
+    recon2: "— отвечу сегодня.",
   },
   compare: {
     eyebrow: "В чём разница",

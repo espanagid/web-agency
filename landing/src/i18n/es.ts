@@ -9,6 +9,7 @@ export interface Dict {
     sub: string;
     cta1: string;
     cta2: string;
+    badge: string;
     stats: { v: string; u: string; l: string }[];
     chatCaption: string;
     chatRole: string;
@@ -63,6 +64,7 @@ export interface Dict {
     recommended: string;
     plans: {
       id: string;
+      name: string;
       tag: string;
       price: string;
       per: string;
@@ -174,6 +176,7 @@ export const es: Dict = {
     sub: "Creamos landing pages con un recepcionista de IA que responde al instante, cualifica clientes y agenda citas por WhatsApp — también a las 3 de la madrugada.",
     cta1: "Quiero mi demo gratis",
     cta2: "Ver tarifas",
+    badge: "Demo gratis en 72 horas · Sin tarjeta ni compromiso",
     stats: [
       { v: "72", u: "h", l: "de cero a online" },
       { v: "24/7", u: "", l: "la IA responde y agenda" },
@@ -330,6 +333,7 @@ export const es: Dict = {
     plans: [
       {
         id: "Start",
+        name: "Start",
         tag: "Para empezar a vender",
         price: "490 €",
         per: "pago único",
@@ -352,6 +356,7 @@ export const es: Dict = {
       },
       {
         id: "Business",
+        name: "Business",
         tag: "El que más vende",
         price: "990 €",
         per: "+ 39 €/mes",
@@ -372,6 +377,7 @@ export const es: Dict = {
       },
       {
         id: "Publicidad",
+        name: "Publicidad",
         tag: "Acelerador",
         price: "300 €",
         per: "+ 199 €/mes",
@@ -391,6 +397,9 @@ export const es: Dict = {
     bottom1: "¿No sabes cuál elegir? Escríbeme y te digo con honestidad cuál necesitas —",
     bottomLink: "incluso si es ninguna",
     bottom2: ".",
+    recon1: "¿Ya tienes web antigua? La reconstrucción completa sale más barata que empezar de cero: Start 399 € · Business 899 € + 39 €/mes — conservamos tu contenido útil.",
+    reconLink: "Pídeme presupuesto por WhatsApp",
+    recon2: "y te contesto hoy.",
   },
   compare: {
     eyebrow: "La diferencia",
