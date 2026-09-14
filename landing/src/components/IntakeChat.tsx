@@ -209,6 +209,10 @@ export default function IntakeChat() {
 
   const submitMutation = trpc.leads.submit.useMutation();
 
+  // --- LLM-режим (DeepSeek): ведём свободный диалог, фолбэк на скрипт ---
+  const llmOff = useRef(false);
+  const llmHistory = useRef<{ role: "user" | "assistant"; content: string }[]>([]);
+
   function pushAi(text: string, kind: Msg["kind"] = "text") {
     setTyping(true);
     const wait = Math.min(500 + text.length * 12, 1400);
@@ -226,7 +230,9 @@ export default function IntakeChat() {
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    pushAi(DICTS[lang].intake.greeting);
+    const greeting = DICTS[lang].intake.greeting;
+    pushAi(greeting);
+    llmHistory.current.push({ role: "assistant", content: greeting });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -341,11 +347,81 @@ export default function IntakeChat() {
     }
   }
 
-  /** Обработка текстового ответа пользователя по текущему шагу */
+  /**
+   * LLM-диалог: отправляем историю в DeepSeek, разбираем служебные токены
+   * (<<ASK_FILES>>, <<BRIEF>>{json}<</BRIEF>>). При любой ошибке API —
+   * прозрачный фолбэк на скриптовый сценарий, заявка не теряется.
+   */
+  async function llmHandle(text: string) {
+    pushUser(text);
+    setInput("");
+    llmHistory.current.push({ role: "user", content: text });
+    setTyping(true);
+    try {
+      const resp = await fetch("/api/llm-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: llmHistory.current }),
+      });
+      if (!resp.ok) throw new Error(`llm ${resp.status}`);
+      const j = (await resp.json()) as { reply?: string };
+      const rawReply = String(j.reply ?? "").trim();
+      if (!rawReply) throw new Error("empty reply");
+      llmHistory.current.push({ role: "assistant", content: rawReply });
+
+      const briefMatch = rawReply.match(/<<BRIEF>>([\s\S]*?)<<\/BRIEF>>/);
+      const askFiles = rawReply.includes("<<ASK_FILES>>");
+      const visible = rawReply
+        .replace(/<<ASK_FILES>>/g, "")
+        .replace(/<<BRIEF>>[\s\S]*?<<\/BRIEF>>/g, "")
+        .trim();
+
+      setTyping(false);
+      if (visible) setMessages((m) => [...m, { id: nextId(), from: "ai", text: visible }]);
+      if (askFiles) setStep("files");
+
+      if (briefMatch) {
+        try {
+          const b = JSON.parse(briefMatch[1]) as Record<string, string>;
+          const v = data.current;
+          if (b.name) v.name = b.name;
+          if (b.business) v.businessName = b.business;
+          if (b.sector) v.sector = b.sector;
+          if (b.desc) v.notes = [b.desc, ...(b.extra ? [b.extra] : [])];
+          if (b.colors) v.colors = b.colors;
+          v.hasLogo = b.logo === "yes" ? "yes" : "generate";
+          if (b.contact) v.contact = b.contact;
+        } catch {
+          // битый JSON — просто продолжаем диалог
+          return;
+        }
+        pushAi(live.current.d.summaryTitle, "summary");
+        setStep("summary");
+      }
+    } catch {
+      setTyping(false);
+      llmOff.current = true;
+      // скрипт обрабатывает это же сообщение без повторного показа
+      handleScripted(text, true);
+    }
+  }
+
+  /** Диспетчер: сначала LLM, при недоступности — скриптовый сценарий */
   function handleText(raw: string) {
     const text = raw.trim();
     if (!text) return;
-    pushUser(text);
+    if (!llmOff.current && step !== "summary" && step !== "done") {
+      void llmHandle(text);
+      return;
+    }
+    handleScripted(text);
+  }
+
+  /** Скриптовая обработка ответа пользователя по текущему шагу */
+  function handleScripted(raw: string, alreadyPushed = false) {
+    const text = raw.trim();
+    if (!text) return;
+    if (!alreadyPushed) pushUser(text);
     setInput("");
     const v = data.current;
     const wantDetect = DETECT_STEPS.has(step);
@@ -473,6 +549,13 @@ export default function IntakeChat() {
 
   /** Клик по чипу */
   function handleChip(chip: string) {
+    // LLM-режим: файловый шаг — сообщаем агенту и продолжаем диалог
+    if (!llmOff.current && step === "files" && (chip === d.ready || chip === d.skip)) {
+      setStep("desc"); // нейтральный шаг: панель файлов скрыта, ввод активен
+      void llmHandle(chip === d.ready ? `${chip} ✅ (${files.length})` : chip);
+      return;
+    }
+
     const v = data.current;
     pushUser(chip);
 
