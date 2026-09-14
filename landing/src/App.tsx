@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Login from "./pages/Login"
 import Admin from "./pages/Admin"
 import NotFound from "./pages/NotFound"
+import Legal from "./pages/Legal"
 
 export default function App() {
   return (
