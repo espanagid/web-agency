@@ -89,6 +89,20 @@ export interface Dict {
     rows: [string, string][];
   };
   faq: { eyebrow: string; title: string; items: { q: string; a: string }[] };
+  contactForm: {
+    eyebrow: string;
+    titleA: string;
+    titleB: string;
+    sub: string;
+    name: string;
+    phone: string;
+    message: string;
+    submit: string;
+    sending: string;
+    success: string;
+    error: string;
+  };
+  popup: { title: string; text: string; cta: string; dismiss: string };
   cases: {
     eyebrow: string;
     titleA: string;
@@ -142,6 +156,10 @@ export interface Dict {
     langStay: string;
     askName: string;
     fallbackUnknown: string;
+    askIntent: string;
+    intentDemo: string;
+    intentQuestion: string;
+    intentAsk: string;
     faqPrice: string;
     faqTime: string;
     faqHuman: string;
@@ -397,7 +415,7 @@ export const es: Dict = {
     bottom1: "¿No sabes cuál elegir? Escríbeme y te digo con honestidad cuál necesitas —",
     bottomLink: "incluso si es ninguna",
     bottom2: ".",
-    recon1: "¿Ya tienes web antigua? La reconstrucción completa sale más barata que empezar de cero: Start 399 € · Business 899 € + 39 €/mes — conservamos tu contenido útil.",
+    recon1: "¿Ya tienes web antigua? Reconstrucción completa con un 10% de descuento sobre las tarifas: Start 441 € · Business 891 € + 39 €/mes — conservamos tu contenido útil.",
     reconLink: "Pídeme presupuesto por WhatsApp",
     recon2: "y te contesto hoy.",
   },
@@ -547,5 +565,28 @@ export const es: Dict = {
       "Claro — puedes hablar con una persona real en el WhatsApp +34 603 081 081 (respondo en menos de 2 horas).",
     faqWhat:
       "Te preparo una web demo con tu contenido real para que la veas funcionando antes de decidir nada. Sin tarjeta ni permanencia.",
+    askIntent: "¡Hola! 👋 ¿Qué te trae por aquí hoy?",
+    intentDemo: "Quiero una demo gratis",
+    intentQuestion: "Tengo una pregunta",
+    intentAsk: "Claro, pregunta lo que quieras 👇",
+  },
+  contactForm: {
+    eyebrow: "¿Prefieres escribir directamente?",
+    titleA: "Déjame tus datos",
+    titleB: "y te llamo.",
+    sub: "Sin chatbots si no quieres: nombre, teléfono y tu mensaje. Te respondo en menos de 2 horas laborables.",
+    name: "Tu nombre",
+    phone: "Teléfono o WhatsApp",
+    message: "¿Qué necesitas? (web nueva, reconstrucción, publicidad...)",
+    submit: "Enviar mensaje",
+    sending: "Enviando...",
+    success: "¡Recibido! Te contacto en menos de 2 horas laborables ✅",
+    error: "Error al enviar — inténtalo de nuevo o escríbeme por WhatsApp.",
+  },
+  popup: {
+    title: "¿Vemos cómo quedaría tu web?",
+    text: "Te preparo una demo gratuita de tu futuro sitio en 72 horas. Sin pagos ni compromiso.",
+    cta: "Quiero mi demo gratis",
+    dismiss: "Ahora no",
   },
 };

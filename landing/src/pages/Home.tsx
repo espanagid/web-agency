@@ -16,6 +16,9 @@ import Pricing from "../sections/Pricing";
 import Compare from "../sections/Compare";
 import Faq from "../sections/Faq";
 import Footer from "../sections/Footer";
+import ContactForm from "../sections/ContactForm";
+import ChatFloat from "../components/ChatFloat";
+import PopupOffer from "../components/PopupOffer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,8 +75,11 @@ function Page() {
         <Pricing />
         <Compare />
         <Faq />
+        <ContactForm />
         <Footer />
       </main>
+      <PopupOffer ready={loaded} />
+      <ChatFloat />
     </div>
   );
 }

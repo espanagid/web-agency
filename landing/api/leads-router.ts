@@ -8,6 +8,7 @@ import {
   setLeadStatus,
 } from "./queries/leads";
 import { readLeadFileBase64 } from "./lib/storage";
+import { notifyLead } from "./lib/mail";
 
 /** антиспам: не более 5 заявок в час с одного IP */
 const submitRate = new Map<string, { count: number; reset: number }>();
@@ -59,6 +60,15 @@ export const leadsRouter = createRouter({
       if (submitRateLimited(ip)) return { id: -1 };
       const { files, website: _hp, ...lead } = input;
       const id = await createLead(lead, files);
+      // уведомление на email (асинхронно, не блокирует ответ клиенту)
+      void notifyLead({
+        id,
+        name: lead.name,
+        contact: lead.contact,
+        businessName: lead.businessName,
+        summary: lead.summary,
+        filesCount: files.length,
+      });
       return { id };
     }),
 

@@ -20,6 +20,7 @@ import { SITE } from "../lib/site";
 const DICTS = { es, en, ru };
 
 type Step =
+  | "intent"
   | "name"
   | "business"
   | "sector"
@@ -170,7 +171,7 @@ const SUMMARY_LABELS: Record<Lang, Record<string, string>> = {
 let mid = 0;
 const nextId = () => ++mid;
 
-export default function IntakeChat() {
+export default function IntakeChat({ float = false }: { float?: boolean }) {
   const { lang } = useLang();
   // язык диалога живёт отдельно от языка сайта: переключение не сбрасывает чат
   const [chatLang, setChatLang] = useState<Lang>(lang);
@@ -179,7 +180,8 @@ export default function IntakeChat() {
 
   const [messages, setMessages] = useState<Msg[]>([]);
   const [typing, setTyping] = useState(false);
-  const [step, setStep] = useState<Step>("name");
+  // в плавающей кнопке сначала спрашиваем намерение: демо или вопрос
+  const [step, setStep] = useState<Step>(float ? "intent" : "name");
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   // honeypot-поле: невидимо для людей, боты его заполняют
@@ -232,7 +234,7 @@ export default function IntakeChat() {
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    const greeting = DICTS[lang].intake.greeting;
+    const greeting = float ? DICTS[lang].intake.askIntent : DICTS[lang].intake.greeting;
     pushAi(greeting);
     llmHistory.current.push({ role: "assistant", content: greeting });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -555,6 +557,22 @@ export default function IntakeChat() {
 
   /** Клик по чипу */
   function handleChip(chip: string) {
+    // первый вопрос плавающего чата: демо или вопрос
+    if (step === "intent") {
+      setStep("name"); // активирует поле ввода
+      if (!llmOff.current) {
+        // LLM сам ведёт дальше: demo → бриф, pregunta → ответ
+        void llmHandle(chip);
+      } else if (chip === d.intentDemo) {
+        pushUser(chip);
+        pushAi(d.askName);
+      } else {
+        pushUser(chip);
+        pushAi(d.intentAsk);
+      }
+      return;
+    }
+
     // LLM-режим: файловый шаг — сообщаем агенту и продолжаем диалог
     if (!llmOff.current && step === "files" && (chip === d.ready || chip === d.skip)) {
       setStep("desc"); // нейтральный шаг: панель файлов скрыта, ввод активен
@@ -690,7 +708,9 @@ export default function IntakeChat() {
 
   // какие чипы показывать
   const chips: string[] =
-    step === "langOffer"
+    step === "intent"
+      ? [d.intentDemo, d.intentQuestion]
+      : step === "langOffer"
       ? [DICTS[detectedLang].intake.langSwitch, d.langStay]
       : step === "sector"
         ? d.sectors
